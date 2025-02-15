@@ -1,0 +1,342 @@
+[33mcommit 4b92f62a194fb896f29a239eb89dee1b73e780f8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/moduleCollaborator[m[33m, [m[1;31morigin/feature/moduleCollaborator[m[33m)[m
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Sun Sep 22 23:37:08 2024 -0500
+
+    ADD: firebase cloud messaging .
+
+[33mcommit 56cfd5cecdaa935440d7c2c153991ebda1071cbd[m
+Merge: 63a47ac 68b7f5c
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Sun Sep 22 23:32:45 2024 -0500
+
+    Merge branch 'feature/moduleCollaborator' of https://github.com/DanielSan02/CoffeTechApp into feature/moduleCollaborator
+
+[33mcommit 63a47ac4cf5234a10a8c32b2fd3de56d19e1365f[m
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Sun Sep 22 23:31:15 2024 -0500
+
+    ADD: firebase cloud messaging
+
+[33mcommit 68b7f5c92a493941f8298eb2db2da8fa2b2fbcf6[m
+Author: dylanRPS15 <u20202192371@usco.edu.co>
+Date:   Sun Sep 22 17:13:32 2024 -0500
+
+    ADD: CommonComposableModuleNotification.kt, EditCollaboratorView.kt, EditCollaboratorViewModel, NotificationView.kt)
+
+[33mcommit 3c43b24895a4950ca9aec99e79fa72b110e5c2fb[m
+Author: dylanRPS15 <u20202192371@usco.edu.co>
+Date:   Sat Sep 21 20:46:47 2024 -0500
+
+    EDIT: FarmView
+
+[33mcommit aefd0842d5fbfe73211d6e85eea2783f309ff72b[m
+Author: dylanRPS15 <u20202192371@usco.edu.co>
+Date:   Sat Sep 21 20:44:59 2024 -0500
+
+    ADD: Module Collaborator (CollaboratorView, CollaboratorViewModel, AddCollaboratorView.kt, AddCollaboratorViewModel, CommonComposableModuleCollaborator.kt)
+
+[33mcommit 7673460cf68d9ebaa3e67633e5d73dbd0a95d4c9[m[33m ([m[1;31morigin/feature/modulefarm[m[33m, [m[1;31morigin/develop[m[33m, [m[1;32mfeature/modulefarm[m[33m, [m[1;32mdevelop[m[33m)[m
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Sat Sep 21 18:32:54 2024 -0500
+
+    ADD: limit character name profile
+
+[33mcommit f7ad07e20424bbb207345d8987eda55c3f34cc6e[m
+Merge: 17a0b4f 9e39374
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Sat Sep 21 17:41:22 2024 -0500
+
+    Merge branch 'feature/settings-views-register' into develop
+    - Fusión de la funcionalidad de ajustes en la vista de registro.
+
+[33mcommit 17a0b4fe3202201592e24936bc3278f7ef411743[m
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Sat Sep 21 17:31:22 2024 -0500
+
+    ADD: Visibility of delete and collaborators based on role permission
+
+[33mcommit 9e39374cd59bb757b285e68e06cf8f1bf234e43c[m[33m ([m[1;31morigin/feature/settings-views-register[m[33m, [m[1;32mfeature/settings-views-register[m[33m)[m
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Sat Sep 21 16:38:51 2024 -0500
+
+    ADD: change in registration logic
+
+[33mcommit cc9a555da6cb996c614fd2c56f98b9fd33846c90[m
+Author: dylanRPS15 <u20202192371@usco.edu.co>
+Date:   Sat Sep 21 13:10:56 2024 -0500
+
+    FIX: Inconsistency Styles
+    
+    Module Auth: (TextFields).
+    Module Farm : (buttons, styles, TextFields, Labels, Colors...)
+    
+    ADD: On FarmInformationView.kt(DeleteButton)
+
+[33mcommit 412de05be5524c0cff38309b979d30adfd1342d1[m
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Fri Sep 20 09:10:06 2024 -0500
+
+    REFACTOR: Switch to using only composable reusables
+
+[33mcommit d0973e2356b50bcbd0807cbb80bdd989e57c595b[m
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Thu Sep 19 10:18:16 2024 -0500
+
+    REFACTOR:Improvement in editing styles and adding property, and improvement in screens with notch
+
+[33mcommit 7bbd485bc08f6bb8fc1d29d0432cf19b2e419e07[m
+Author: dylanRPS15 <u20202192371@usco.edu.co>
+Date:   Thu Sep 19 00:43:35 2024 -0500
+
+    FIX: Inconsistency module FARM (buttons, styles, TextFields, Labels, Colors...)
+    
+    ADD: dependencies and libraries (build.gradle.kts and libs.versions.toml)
+    
+    EDIT: Views of Module Farm and CommonComposableModuleFarm.kt
+
+[33mcommit 983316975ee967b6e8792f3783eacd833afde79b[m
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Wed Sep 18 15:31:23 2024 -0500
+
+    ADD: connection to view information about a farm and edit farm
+
+[33mcommit 6f285aca892e0c8fb9c23b7c21748b36fa92d691[m
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Tue Sep 17 23:02:01 2024 -0500
+
+    DOCS: new documentation auth module
+
+[33mcommit 42a137063743123f7afdab17b7f54a26ab437225[m
+Merge: 02a0096 faf50b2
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Tue Sep 17 15:31:37 2024 -0500
+
+    RESOLVE CONFLICTS: CommonComposableModuleFarm.kt, CreateFarmView.kt, FarmEditView.kt, FarmView.kt)
+
+[33mcommit 02a00969230ba2f5c280dcff34dcbb3446f6f4c3[m
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Tue Sep 17 12:53:11 2024 -0500
+
+    ADD viewModels farmViewModel and createViewModel
+
+[33mcommit faf50b2667417b33648b1ce0fafef39958e9ecef[m
+Author: dylanRPS15 <u20202192371@usco.edu.co>
+Date:   Tue Sep 17 11:53:43 2024 -0500
+
+    EDIT: (CommonComposableModuleFarm, FarmView (Navigation to FarmInformationView)
+    
+    FIX: [,CreateFarmView, FarmEditView,(Styles and BackButton]
+
+[33mcommit bcd10990565df050d3535285bf96ef8fa9f085f2[m
+Author: dylanRPS15 <u20202192371@usco.edu.co>
+Date:   Mon Sep 16 11:43:20 2024 -0500
+
+    EDIT: (CommonComposableModuleFarm, FarmView, CommonComposable, Routes, Navigation, FarmViewModel)
+    
+    ADD: (CreateFarmView, CreateFarmViewModel)
+
+[33mcommit 264f077204f5a2f7b03e872f5d8b3418eec53480[m
+Author: dylanRPS15 <u20202192371@usco.edu.co>
+Date:   Mon Sep 16 09:34:51 2024 -0500
+
+    EDIT: (CommonComposableModuleFarm, FarmEditView, CommonComposable)
+
+[33mcommit 0751009acbcce76091fdd86560d84663e4800cd4[m
+Author: dylanRPS15 <u20202192371@usco.edu.co>
+Date:   Sun Sep 15 21:23:29 2024 -0500
+
+    ADD: (CommonComposableModuleFarm, FarmEditView, FarmEditViewModel, FarmInformationView, FarmInformationViewModel, HeaderFooterSubView, HeaderFooterSubViewModel)
+    
+    EDIT: (FarmView, FarmViewModel, CommonComposable.kt, Routes, Navigation)
+
+[33mcommit ced8354c4c2df237f19a178fc57664aee1aef631[m
+Author: dylanRPS15 <u20202192371@usco.edu.co>
+Date:   Sat Sep 14 11:29:37 2024 -0500
+
+    FIX:FarmView, HeaderFooterView, CommonComposable (ActionButtonFloat, SearchBar)
+
+[33mcommit 31c3d1c9490d16c8afa9f937d6a927d304fc4b0a[m
+Author: dylanRPS15 <u20202192371@usco.edu.co>
+Date:   Sat Sep 14 11:27:31 2024 -0500
+
+    FIX:FarmView, HeaderFooterView, CommonComposable (ActionButtonFloat, SearchBar)
+
+[33mcommit 84cbaa25b0fdd5e1997457b7f856959075a0e2c4[m
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Thu Sep 12 13:14:43 2024 -0500
+
+    FIX: doble name on register button
+
+[33mcommit 961a04d74cff2a753d1c422bbffd3c8bc1214ec8[m
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Wed Sep 11 21:00:58 2024 -0500
+
+    FIX: Bug ID 2 Duplicate Request, no longer allows pressing a request button to the backend multiple times in a short time
+
+[33mcommit 9507abbbc3a090885aece3aaf61fa69a42292306[m
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Wed Sep 11 18:38:12 2024 -0500
+
+    FIX: Bug ID 3, ID 4, ID 5 bugs that allow misuse of gestures such as "back", returning to the session screen after closing it, and saving the "name" field empty when editing the profile.
+
+[33mcommit 394a553a8d8b64051c61d182e25a339bac076ef4[m
+Merge: aaef158 6c43d46
+Author: PacoValen <132179534+PacoValen@users.noreply.github.com>
+Date:   Wed Sep 11 15:58:13 2024 -0500
+
+    Merge pull request #2 from DanielSan02/hotfix/AuthForgotPasswordViewIssue2
+    
+    FIX:Bug Forgot Button
+
+[33mcommit 6c43d469d3f6f171674fab108d0b9cb7c9ad0d4c[m[33m ([m[1;31morigin/hotfix/AuthForgotPasswordViewIssue2[m[33m)[m
+Merge: e1b1aa3 aaef158
+Author: PacoValen <132179534+PacoValen@users.noreply.github.com>
+Date:   Wed Sep 11 15:52:17 2024 -0500
+
+    Merge branch 'develop' into hotfix/AuthForgotPasswordViewIssue2
+
+[33mcommit aaef158dd80f29322cdf2435dcb61af160b63f21[m
+Author: dylanRPS15 <u20202192371@usco.edu.co>
+Date:   Wed Sep 11 15:48:01 2024 -0500
+
+    FIX:Inconsistency with(ReusableTextField, ButtonsViews,PasswordFieldVisibility and TopBarWithHamburger)
+
+[33mcommit d85c51805bc3302b68a32bf3763f8628cf19989d[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/feature/profile[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m, [m[1;32mfeature/profile[m[33m)[m
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Wed Sep 11 05:13:18 2024 -0500
+
+    ADD: Change password and profile functionality, with refactoring and improvements to navigation, views, and ViewModels
+
+[33mcommit efbbdd9ceb211136b529ce3ab222881ea9462fda[m[33m ([m[1;31morigin/feature/logout[m[33m, [m[1;32mfeature/logout[m[33m)[m
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Wed Sep 11 00:59:22 2024 -0500
+
+    ADD: Logout view implementation and UI improvements
+
+[33mcommit e1b1aa3a8dbb4b520a452de120b099ff3118c1d3[m[33m ([m[1;32mhotfix/AuthForgotPasswordViewIssue2[m[33m)[m
+Author: PacoValen <valen.pol.os13@gmail.com>
+Date:   Tue Sep 10 22:32:28 2024 -0500
+
+    FIX:Bug Forgot Button
+
+[33mcommit e3f5be0c62c3be32d6def2b89010daf12e09786b[m
+Author: dylanRPS15 <u20202192371@usco.edu.co>
+Date:   Mon Sep 9 15:35:40 2024 -0500
+
+    CONFIG: CommonComposable and FarmViewm (FloatingActionButtonGroup and SearchBar)
+
+[33mcommit 10978770c89fe0b5f94cda046469a397c2274e9a[m[33m ([m[1;32mbugfix/inconsistencia-estilos[m[33m)[m
+Author: dylanRPS15 <u20202192371@usco.edu.co>
+Date:   Fri Sep 6 12:18:25 2024 -0500
+
+    CONFIG: FarmView
+
+[33mcommit eb4a762d7c9e848a16d990fd19c013621ec8f40d[m
+Merge: c4ce9a4 94e7cdb
+Author: dylanRPS15 <u20202192371@usco.edu.co>
+Date:   Fri Sep 6 10:40:18 2024 -0500
+
+    Merge remote-tracking branch 'origin/develop' into develop
+    
+    # Conflicts:
+    #       app/src/main/java/com/example/coffetech/MainActivity.kt
+    #       app/src/main/java/com/example/coffetech/Routes/Routes.kt
+    #       app/src/main/java/com/example/coffetech/common/CommonComposable.kt
+    #       app/src/main/java/com/example/coffetech/viewAuth/LoginScreen.kt
+
+[33mcommit c4ce9a481700136416224ef091deedf4cb581729[m
+Author: dylanRPS15 <u20202192371@usco.edu.co>
+Date:   Thu Sep 5 23:41:16 2024 -0500
+
+    CONFIG: FincaScreen
+
+[33mcommit 94e7cdb482dfd81dce55df74820550706dcf17e2[m
+Merge: b270f73 2e9f3db
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Thu Sep 5 10:33:03 2024 -0500
+
+    RESOLVE: conflic with another commit
+
+[33mcommit b270f7374a433d8bbab8c63b2ac56d4109f27923[m
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Thu Sep 5 10:25:32 2024 -0500
+
+    REFACTOR: Switch to MVVM and add navigation paths
+
+[33mcommit 2e9f3db3b09c94a0b1e18c1a9445671b287f3ce1[m
+Author: DevepDan <99693189+DanielSan02@users.noreply.github.com>
+Date:   Tue Sep 3 14:45:23 2024 -0500
+
+    Create codeql.yml
+    
+    Setup code scanning
+
+[33mcommit 5ab335d1fadd2f241f2a93ce404a661039bbeaf4[m
+Author: dylanRPS15 <u20202192371@usco.edu.co>
+Date:   Mon Sep 2 22:11:46 2024 -0500
+
+    CONFIG: Forgot Password, Routes
+
+[33mcommit a61fd11935c9666c858b9e9d7e30ace0b25609a6[m
+Author: DanielSan02 <u20202191528@usco.edu.co>
+Date:   Thu Aug 29 16:20:37 2024 -0500
+
+    CONFIG: CommonComposable - AlertSend
+
+[33mcommit ced476f9c4a4aadacbf7fa095b02a50a8155b6f6[m
+Author: DanielSan02 <u20202191528@usco.edu.co>
+Date:   Thu Aug 29 16:16:20 2024 -0500
+
+    CONFIG: CommonComposable - AlertSend
+
+[33mcommit a659e0c445dd5fc8584a1a987e51c47ba01b153d[m
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Thu Aug 29 00:30:48 2024 -0500
+
+    FEAT: connect to API and create reusable composables
+
+[33mcommit 6f7cd380d462cd3a3ddddb56efc7a04e60cf4998[m
+Author: naromu <natyrm15173444@gmail.com>
+Date:   Wed Aug 28 15:25:53 2024 -0500
+
+    ADD: Conexion con la API
+
+[33mcommit b29c2ae2b7ed1b182362ddb85c6e6c9528e3399b[m
+Merge: b2d1639 2d4de7d
+Author: DevepDan <99693189+DanielSan02@users.noreply.github.com>
+Date:   Tue Aug 27 14:08:16 2024 -0500
+
+    Merge pull request #1 from DanielSan02/master
+    
+    Commit to develop branch
+
+[33mcommit 2d4de7dced39eb49814af690ed54aeaac68acc8f[m
+Author: DanielSan02 <u20202191528@usco.edu.co>
+Date:   Tue Aug 27 14:03:25 2024 -0500
+
+    Commit to develop branch
+
+[33mcommit b2d16392f8bca216a6e32481df53c8288564d1fe[m
+Author: DanielSan02 <u20202191528@usco.edu.co>
+Date:   Mon Aug 26 16:55:40 2024 -0500
+
+    Set a logo for app
+
+[33mcommit 15daac746834c1cf2c0a67153d0419f173db9315[m
+Author: DanielSan02 <u20202191528@usco.edu.co>
+Date:   Mon Aug 26 16:45:15 2024 -0500
+
+    Validate email in register screen
+
+[33mcommit 77d06a30c56f8c8f005a9cd3d7f96de5e94f6e12[m
+Author: DanielSan02 <u20202191528@usco.edu.co>
+Date:   Mon Aug 26 16:35:05 2024 -0500
+
+    Validations on Email field - Forgot password
+    Validation on password format - Register Screen
+
+[33mcommit 224f0eee3ee86c6fceadc03ad9778ff90bbf7e3d[m
+Author: DanielSan02 <u20202191528@usco.edu.co>
+Date:   Mon Aug 26 12:15:42 2024 -0500
+
+    Initial commit

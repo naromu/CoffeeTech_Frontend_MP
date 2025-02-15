@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Estilo para títulos grandes -->
+    <style name="TitleLarge">
+        <item name="android:textSize">40sp</item>
+        <item name="android:fontFamily">@font/roboto_black</item>
+    </style>
+
+    <!-- Estilo para títulos pequeños -->
+    <style name="TitleSmall">
+        <item name="android:textSize">25sp</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+
+    <!-- Estilo para descripciones -->
+    <style name="Description">
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+    </style>
+
+
+</resources>
