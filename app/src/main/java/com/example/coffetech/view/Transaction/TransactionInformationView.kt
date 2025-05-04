@@ -37,7 +37,6 @@ import com.example.coffetech.utils.SharedPreferencesHelper
 import com.example.coffetech.view.common.HeaderFooterSubView
 import com.example.coffetech.viewmodel.Transaction.TransactionInformationViewModel
 import com.example.coffetech.viewmodel.farm.FarmInformationViewModel
-import com.example.coffetech.viewmodel.flowering.FloweringInformationViewModel
 import kotlinx.coroutines.flow.map
 import java.net.URLEncoder
 

@@ -3,19 +3,11 @@
 package com.example.coffetech.viewmodel.Auth
 
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.example.coffetech.Routes.Routes
-import com.example.coffetech.model.RegisterRequest
-import com.example.coffetech.model.RegisterResponse
-import com.example.coffetech.model.RetrofitInstance
-import com.example.coffetech.utils.SharedPreferencesHelper
-import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+
 /**
  * ViewModel for managing the state and logic of the user registration flow.
  * This ViewModel handles user input validation, performing the registration request, and navigation.

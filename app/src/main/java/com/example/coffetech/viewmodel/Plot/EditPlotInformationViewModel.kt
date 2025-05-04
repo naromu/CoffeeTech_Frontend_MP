@@ -153,7 +153,7 @@ class EditPlotInformationViewModel : ViewModel() {
         _errorMessage.value = ""
 
         // Realizar la llamada a la API
-        RetrofitInstance.api.updatePlotGeneralInfo(sessionToken, updateRequest)
+        FarmInstance.api.updatePlotGeneralInfo(sessionToken, updateRequest)
             .enqueue(object : Callback<UpdatePlotGeneralInfoResponse> {
                 override fun onResponse(
                     call: Call<UpdatePlotGeneralInfoResponse>,

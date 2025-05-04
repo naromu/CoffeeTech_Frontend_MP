@@ -8,10 +8,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.example.coffetech.Routes.Routes
+import com.example.coffetech.model.AuthRetrofitInstance
 import com.example.coffetech.model.RetrofitInstance
 import com.example.coffetech.model.VerifyRequest
 import com.example.coffetech.model.VerifyResponse
-import com.example.coffetech.utils.SharedPreferencesHelper
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -64,7 +64,7 @@ class VerifyAccountViewModel : ViewModel() {
         isLoading.value = true // Set loading state to true
 
         // Make the network request to verify the token
-        RetrofitInstance.api.verifyUser(verifyRequest).enqueue(object : Callback<VerifyResponse> {
+        AuthRetrofitInstance.api.verifyUser(verifyRequest).enqueue(object : Callback<VerifyResponse> {
             override fun onResponse(call: Call<VerifyResponse>, response: Response<VerifyResponse>) {
                 isLoading.value = false // Disable loading state
 

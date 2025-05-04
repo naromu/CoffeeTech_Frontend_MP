@@ -5,11 +5,11 @@ import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import com.example.coffetech.model.AuthRetrofitInstance
 import com.example.coffetech.model.ChangePasswordRequest
 import com.example.coffetech.model.ChangePasswordResponse
 import com.example.coffetech.model.ResetPasswordRequest
 import com.example.coffetech.model.ResetPasswordResponse
-import com.example.coffetech.model.RetrofitInstance
 import com.example.coffetech.utils.SharedPreferencesHelper
 import retrofit2.Call
 import retrofit2.Callback
@@ -145,7 +145,7 @@ class ChangePasswordViewModel : ViewModel() {
         )
         isLoading.value = true
         // Realiza la llamada al backend usando el método PUT
-        RetrofitInstance.api.changePassword(changePasswordRequest, sessionToken)
+        AuthRetrofitInstance.api.changePassword(changePasswordRequest, sessionToken)
             .enqueue(object : Callback<ChangePasswordResponse> {
                 override fun onResponse(
                     call: Call<ChangePasswordResponse>,

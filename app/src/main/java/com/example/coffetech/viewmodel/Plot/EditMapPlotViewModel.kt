@@ -197,7 +197,7 @@ class EditMapPlotViewModel : ViewModel() {
             altitude = _altitude.value?.toString() ?: "0.0"
         )
 
-        RetrofitInstance.api.updatePlotLocation(sessionToken, request).enqueue(object :
+        FarmInstance.api.updatePlotLocation(sessionToken, request).enqueue(object :
             Callback<UpdatePlotLocationResponse> {
             override fun onResponse(
                 call: Call<UpdatePlotLocationResponse>,

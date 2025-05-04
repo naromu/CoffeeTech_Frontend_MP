@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.example.coffetech.model.FarmInstance
 import com.example.coffetech.model.ListPlotsResponse
 import com.example.coffetech.model.Plot
 import com.example.coffetech.model.RetrofitInstance
@@ -76,7 +77,7 @@ class FormFinanceReportViewModel : ViewModel() {
             return
         }
 
-        RetrofitInstance.api.listPlots(farmId, sessionToken).enqueue(object :
+        FarmInstance.api.listPlots(farmId, sessionToken).enqueue(object :
             Callback<ListPlotsResponse> {
             override fun onResponse(call: Call<ListPlotsResponse>, response: Response<ListPlotsResponse>) {
                 _isLoading.value = false

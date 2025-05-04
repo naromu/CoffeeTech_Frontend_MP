@@ -16,6 +16,7 @@ import androidx.room.util.copy
 import com.example.coffetech.Routes.Routes
 import com.example.coffetech.model.CreateFarmResponse
 import com.example.coffetech.model.CreatePlotRequest
+import com.example.coffetech.model.FarmInstance
 import com.example.coffetech.model.OpenElevationService
 import com.example.coffetech.model.RetrofitInstance
 import com.example.coffetech.utils.SharedPreferencesHelper
@@ -290,7 +291,7 @@ class PlotViewModel : ViewModel() {
             farm_id = farmId
         )
 
-        RetrofitInstance.api.createPlot(sessionToken, request).enqueue(object : retrofit2.Callback<CreateFarmResponse> {
+        FarmInstance.api.createPlot(sessionToken, request).enqueue(object : retrofit2.Callback<CreateFarmResponse> {
             override fun onResponse(call: Call<CreateFarmResponse>, response: retrofit2.Response<CreateFarmResponse>) {
                 _isLoading.value = false
                 if (response.isSuccessful) {

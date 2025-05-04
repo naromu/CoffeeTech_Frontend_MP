@@ -5,9 +5,9 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.coffetech.model.AuthRetrofitInstance
 import com.example.coffetech.model.UpdateProfileRequest
 import com.example.coffetech.model.UpdateProfileResponse
-import com.example.coffetech.model.RetrofitInstance
 import com.example.coffetech.utils.SharedPreferencesHelper
 import retrofit2.Call
 import retrofit2.Callback
@@ -97,7 +97,7 @@ class ProfileViewModel : ViewModel() {
         isLoading.value = true // Set loading state to true
 
         // Make the network request to update the profile
-        RetrofitInstance.api.updateProfile(updateRequest, sessionToken).enqueue(object : Callback<UpdateProfileResponse> {
+        AuthRetrofitInstance.api.updateProfile(updateRequest, sessionToken).enqueue(object : Callback<UpdateProfileResponse> {
             override fun onResponse(call: Call<UpdateProfileResponse>, response: Response<UpdateProfileResponse>) {
                 isLoading.value = false // Disable loading state
 

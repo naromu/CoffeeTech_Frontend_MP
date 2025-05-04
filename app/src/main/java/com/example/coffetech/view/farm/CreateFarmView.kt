@@ -47,7 +47,7 @@ fun CreateFarmView(
     val context = LocalContext.current
     val farmName by viewModel.farmName.collectAsState()
     val farmArea by viewModel.farmArea.collectAsState()
-    val selectedUnit by viewModel.selectedUnit.collectAsState()
+    val selectedUnit by viewModel.selectedUnitName.collectAsState()
     val areaUnits by viewModel.areaUnits.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()

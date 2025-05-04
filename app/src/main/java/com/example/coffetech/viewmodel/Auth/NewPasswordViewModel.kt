@@ -9,7 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.example.coffetech.Routes.Routes
-import com.example.coffetech.model.RetrofitInstance
+import com.example.coffetech.model.AuthRetrofitInstance
 import com.example.coffetech.model.ResetPasswordRequest
 import com.example.coffetech.model.ResetPasswordResponse
 import retrofit2.Call
@@ -98,7 +98,7 @@ class NewPasswordViewModel : ViewModel() {
             isLoading.value = true // Indicate that the loading process has started
 
             // Make the network request to reset the password
-            RetrofitInstance.api.resetPassword(resetPasswordRequest).enqueue(object : Callback<ResetPasswordResponse> {
+            AuthRetrofitInstance.api.resetPassword(resetPasswordRequest).enqueue(object : Callback<ResetPasswordResponse> {
                 override fun onResponse(call: Call<ResetPasswordResponse>, response: Response<ResetPasswordResponse>) {
                     isLoading.value = false
 

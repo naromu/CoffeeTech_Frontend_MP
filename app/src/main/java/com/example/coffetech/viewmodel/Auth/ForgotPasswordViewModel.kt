@@ -10,7 +10,7 @@ import androidx.navigation.NavController
 import com.example.coffetech.Routes.Routes
 import com.example.coffetech.model.ForgotPasswordRequest
 import com.example.coffetech.model.ForgotPasswordResponse
-import com.example.coffetech.model.RetrofitInstance
+import com.example.coffetech.model.AuthRetrofitInstance
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -68,7 +68,7 @@ class ForgotPasswordViewModel : ViewModel() {
 
         val forgotPasswordRequest = ForgotPasswordRequest(email.value)
 
-        RetrofitInstance.api.forgotPassword(forgotPasswordRequest).enqueue(object : Callback<ForgotPasswordResponse> {
+        AuthRetrofitInstance.api.forgotPassword(forgotPasswordRequest).enqueue(object : Callback<ForgotPasswordResponse> {
             override fun onResponse(call: Call<ForgotPasswordResponse>, response: Response<ForgotPasswordResponse>) {
                 isLoading.value = false // Stop loading
 

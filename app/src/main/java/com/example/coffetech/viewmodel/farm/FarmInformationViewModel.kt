@@ -19,6 +19,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import androidx.compose.ui.text.input.TextFieldValue
+import com.example.coffetech.model.FarmInstance
+
 /**
  * ViewModel responsible for managing the state and logic of displaying farm information.
  */
@@ -161,7 +163,7 @@ class FarmInformationViewModel : ViewModel() {
         Log.d("FarmInfoViewModel", "Starting API call to fetch farm data for farmId: $farmId with sessionToken: $sessionToken")
         _isLoading.value = true
 
-        RetrofitInstance.api.getFarm(farmId, sessionToken).enqueue(object : Callback<GetFarmResponse> {
+        FarmInstance.api.getFarm(farmId, sessionToken).enqueue(object : Callback<GetFarmResponse> {
             override fun onResponse(call: Call<GetFarmResponse>, response: Response<GetFarmResponse>) {
                 _isLoading.value = false
                 if (response.isSuccessful) {
@@ -170,9 +172,9 @@ class FarmInformationViewModel : ViewModel() {
                         responseBody.data?.farm?.let { farm ->
                             _farmName.value = farm.name
                             _farmArea.value = farm.area
-                            _unitOfMeasure.value = farm.unit_of_measure
+                            _unitOfMeasure.value = farm.area_unit
                             _selectedRole.value = farm.role
-                            _status.value = farm.status
+                            _status.value = farm.farm_state
 
                             // Cargar permisos basados en el rol
                             loadRolePermissions(context, farm.role)
@@ -227,7 +229,7 @@ class FarmInformationViewModel : ViewModel() {
         _isLoading.value = true
         _errorMessage.value = ""  // Limpiar cualquier mensaje de error anterior
 
-        RetrofitInstance.api.listPlots(farmId, sessionToken).enqueue(object : Callback<ListPlotsResponse> {
+        FarmInstance.api.listPlots(farmId, sessionToken).enqueue(object : Callback<ListPlotsResponse> {
             override fun onResponse(call: Call<ListPlotsResponse>, response: Response<ListPlotsResponse>) {
                 _isLoading.value = false
                 if (response.isSuccessful) {

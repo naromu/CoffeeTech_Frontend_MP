@@ -6,9 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.example.coffetech.Routes.Routes
+import com.example.coffetech.model.AuthRetrofitInstance
 import com.example.coffetech.model.RegisterRequest
 import com.example.coffetech.model.RegisterResponse
-import com.example.coffetech.model.RetrofitInstance
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -87,7 +87,7 @@ class RegisterPasswordViewModel : ViewModel() {
         val registerRequest = RegisterRequest(name, email, password.value, confirmPassword.value)
 
         // Make the registration request to the backend
-        RetrofitInstance.api.registerUser(registerRequest).enqueue(object : Callback<RegisterResponse> {
+        AuthRetrofitInstance.api.registerUser(registerRequest).enqueue(object : Callback<RegisterResponse> {
             override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
                 isLoading.value = false // Stop loading
 

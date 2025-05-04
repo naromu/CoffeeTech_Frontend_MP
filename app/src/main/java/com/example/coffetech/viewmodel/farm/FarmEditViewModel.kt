@@ -6,10 +6,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.navigation.NavController
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import com.example.coffetech.model.CreateFarmRequest
 import com.example.coffetech.model.CreateFarmResponse
+import com.example.coffetech.model.FarmInstance
 import com.example.coffetech.model.RetrofitInstance
+import com.example.coffetech.model.UnitMeasure
 import com.example.coffetech.model.UpdateFarmRequest
 import com.example.coffetech.model.UpdateFarmResponse
 import com.example.coffetech.utils.SharedPreferencesHelper
@@ -28,8 +31,14 @@ class FarmEditViewModel : ViewModel() {
     private val _farmArea = MutableStateFlow("")
     val farmArea: StateFlow<String> = _farmArea.asStateFlow()
 
-    private val _selectedUnit = MutableStateFlow("")
-    val selectedUnit: StateFlow<String> = _selectedUnit.asStateFlow()
+    private val _selectedUnitName = MutableStateFlow("Seleccione una opción")
+    val selectedUnitName: StateFlow<String> = _selectedUnitName.asStateFlow()
+
+    private val _selectedUnitId = MutableStateFlow<Int?>(null)
+
+    private val _areaUnitsList = MutableStateFlow<List<UnitMeasure>>(emptyList())
+    val areaUnitsList: StateFlow<List<UnitMeasure>> = _areaUnitsList
+
 
     // Estado para la lista de unidades de medida
     private val _areaUnits = MutableStateFlow<List<String>>(emptyList())
@@ -65,7 +74,10 @@ class FarmEditViewModel : ViewModel() {
         // Establecer los valores iniciales en los estados del ViewModel
         _farmName.value = farmName
         _farmArea.value = farmArea
-        _selectedUnit.value = selectedUnit
+        _selectedUnitName.value = selectedUnit
+
+        val selectedUnitObject = _areaUnitsList.value.find { it.name == selectedUnit }
+        _selectedUnitId.value = selectedUnitObject?.area_unit_id
     }
 
     /**
@@ -91,18 +103,25 @@ class FarmEditViewModel : ViewModel() {
      *
      * @param newUnit The new unit of measure selected by the user.
      */
-    fun onUnitChange(newUnit: String) {
-        _selectedUnit.value = newUnit
-        checkForChanges()
-    }
+    fun onUnitChange(newUnitName: String) {
+        _selectedUnitName.value = newUnitName
+        val selectedUnit = _areaUnitsList.value.find { it.name == newUnitName }
 
+        if (selectedUnit != null) {
+            _selectedUnitId.value = selectedUnit.area_unit_id
+            Log.d("CreateFarm", "Unidad seleccionada: ${selectedUnit.name} (ID: ${selectedUnit.area_unit_id})")
+        } else {
+            Log.e("CreateFarm", "No se encontró la unidad con nombre: $newUnitName")
+            _selectedUnitId.value = null
+        }
+    }
     /**
      * Checks if any changes have been made to the farm details.
      */
     private fun checkForChanges() {
         _hasChanges.value = _farmName.value != initialFarmName ||
                 _farmArea.value != initialFarmArea ||
-                _selectedUnit.value != initialSelectedUnit
+                _selectedUnitName.value != initialSelectedUnit
     }
 
     /**
@@ -114,10 +133,20 @@ class FarmEditViewModel : ViewModel() {
         val sharedPreferencesHelper = SharedPreferencesHelper(context)
         val units = sharedPreferencesHelper.getUnitMeasures()
         if (!units.isNullOrEmpty()) {
-            val areaUnitsList = units.filter { it.unit_of_measure_type.name == "Área" }
-                .map { it.name }
-            _areaUnits.value = areaUnitsList
+            _areaUnitsList.value = units
+            val areaUnitNames = units.map { it.name }
+            _areaUnits.value = areaUnitNames
+
+            // Añade este log para verificar los datos cargados
+            Log.d("CreateFarm", "Unidades cargadas: ${units.joinToString { "${it.name} (ID: ${it.area_unit_id})" }}")
+        } else {
+            Log.e("CreateFarm", "No se encontraron unidades de medida")
         }
+
+        // Después de cargar las unidades, asegura que el ID esté alineado al nombre por defecto
+        val selectedUnitObject = units?.find { it.name == _selectedUnitName.value }
+        _selectedUnitId.value = selectedUnitObject?.area_unit_id
+
     }
 
     /**
@@ -171,11 +200,11 @@ class FarmEditViewModel : ViewModel() {
             farm_id = farmId,
             name = _farmName.value,
             area = _farmArea.value.toDouble(),
-            unitMeasure = _selectedUnit.value
+            area_unit_id = _selectedUnitId.value ?: throw IllegalStateException("Debe seleccionar una unidad")
         )
 
         // Realizar la solicitud al servidor
-        RetrofitInstance.api.updateFarm(sessionToken, updateFarmRequest).enqueue(object :
+        FarmInstance.api.updateFarm(sessionToken, updateFarmRequest).enqueue(object :
             Callback<UpdateFarmResponse> {
             override fun onResponse(call: Call<UpdateFarmResponse>, response: Response<UpdateFarmResponse>) {
                 isLoading.value = false

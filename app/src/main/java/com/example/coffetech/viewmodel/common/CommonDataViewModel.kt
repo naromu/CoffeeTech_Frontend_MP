@@ -2,7 +2,10 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.coffetech.model.ApiResponse
+import com.example.coffetech.model.AuthRetrofitInstance
+import com.example.coffetech.model.AuthService
 import com.example.coffetech.model.CoffeeVariety
+import com.example.coffetech.model.FarmInstance
 import com.example.coffetech.model.Role
 import com.example.coffetech.model.UnitMeasure
 import com.example.coffetech.utils.SharedPreferencesHelper
@@ -23,24 +26,19 @@ class CommonDataViewModel : ViewModel() {
 
         Log.d("CommonDataViewModel", "Version actual: $currentVersionCode, Version guardada: $savedVersionCode")
 
-        if (currentVersionCode != savedVersionCode) {
-            Log.d("CommonDataViewModel", "Nueva instalación o actualización detectada")
+        // Actualizar roles y unidades de medida si la versión ha cambiado
+        fetchRolesAndStore(sharedPreferencesHelper)
+        fetchUnitMeasuresAndStore(sharedPreferencesHelper)
+        fetchCoffeeVarietiesAndStore(sharedPreferencesHelper)
 
-            // Actualizar roles y unidades de medida si la versión ha cambiado
-            fetchRolesAndStore(sharedPreferencesHelper)
-            fetchUnitMeasuresAndStore(sharedPreferencesHelper)
-            fetchCoffeeVarietiesAndStore(sharedPreferencesHelper)
+        // Guardar el nuevo código de versión
+        sharedPreferencesHelper.saveVersionCode(currentVersionCode)
 
-            // Guardar el nuevo código de versión
-            sharedPreferencesHelper.saveVersionCode(currentVersionCode)
-        } else {
-            Log.d("CommonDataViewModel", "La versión no ha cambiado, no se necesitan actualizaciones")
-        }
     }
 
     // Función para obtener roles desde el backend y almacenarlos
     private fun fetchRolesAndStore(sharedPreferencesHelper: SharedPreferencesHelper) {
-        RetrofitInstance.api.getRoles().enqueue(object : Callback<ApiResponse<List<Role>>> {
+        AuthRetrofitInstance.api.getRoles().enqueue(object : Callback<ApiResponse<List<Role>>> {
             override fun onResponse(call: Call<ApiResponse<List<Role>>>, response: Response<ApiResponse<List<Role>>>) {
                 if (response.isSuccessful && response.body()?.data != null) {
                     val roles = response.body()?.data!!
@@ -59,12 +57,13 @@ class CommonDataViewModel : ViewModel() {
 
     // Función para obtener unidades de medida desde el backend y almacenarlas
     private fun fetchUnitMeasuresAndStore(sharedPreferencesHelper: SharedPreferencesHelper) {
-        RetrofitInstance.api.getUnitMeasures().enqueue(object : Callback<ApiResponse<List<UnitMeasure>>> {
+        FarmInstance.api.getUnitMeasures().enqueue(object : Callback<ApiResponse<List<UnitMeasure>>> {
             override fun onResponse(call: Call<ApiResponse<List<UnitMeasure>>>, response: Response<ApiResponse<List<UnitMeasure>>>) {
                 if (response.isSuccessful && response.body()?.data != null) {
                     val unitMeasures = response.body()?.data!!
                     sharedPreferencesHelper.saveUnitMeasures(unitMeasures)
                     Log.d("fetchUnitMeasuresAndStore", "Unidades de medida almacenadas correctamente")
+                    Log.d("fetchUnitMeasuresAndStore", "Unidades recibidas: ${unitMeasures.toString()}")
                 } else {
                     Log.e("fetchUnitMeasuresAndStore", "Error: ${response.message()}")
                 }
@@ -76,7 +75,7 @@ class CommonDataViewModel : ViewModel() {
         })
     }
     private fun fetchCoffeeVarietiesAndStore(sharedPreferencesHelper: SharedPreferencesHelper) {
-        RetrofitInstance.api.getCoffeeVarieties().enqueue(object : Callback<ApiResponse<List<CoffeeVariety>>> {
+        FarmInstance.api.getCoffeeVarieties().enqueue(object : Callback<ApiResponse<List<CoffeeVariety>>> {
             override fun onResponse(call: Call<ApiResponse<List<CoffeeVariety>>>, response: Response<ApiResponse<List<CoffeeVariety>>>) {
                 if (response.isSuccessful && response.body()?.data != null) {
                     val coffeeVarieties = response.body()?.data!!

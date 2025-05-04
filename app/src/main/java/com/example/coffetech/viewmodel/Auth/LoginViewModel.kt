@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.example.coffetech.Routes.Routes
+import com.example.coffetech.model.AuthRetrofitInstance
 import com.example.coffetech.model.LoginRequest
 import com.example.coffetech.model.LoginResponse
 import com.example.coffetech.model.RetrofitInstance
@@ -125,7 +126,7 @@ class LoginViewModel() : ViewModel(), Parcelable {
             Log.d("LoginViewModel", "Iniciando solicitud de inicio de sesión con email: ${email.value} y FCM Token: $fcmToken")
 
             // Enviar la solicitud de inicio de sesión al servidor
-            RetrofitInstance.api.loginUser(loginRequest).enqueue(object : Callback<LoginResponse> {
+            AuthRetrofitInstance.api.loginUser(loginRequest).enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                     isLoading.value = false
                     Log.d("LoginViewModel", "Respuesta del servidor recibida")

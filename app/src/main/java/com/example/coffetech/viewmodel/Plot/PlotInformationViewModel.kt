@@ -3,6 +3,7 @@
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import com.example.coffetech.model.FarmInstance
 import com.example.coffetech.model.GetPlotResponse
 import com.example.coffetech.model.Plot
 import com.example.coffetech.model.RetrofitInstance
@@ -118,7 +119,7 @@ class PlotInformationViewModel : ViewModel() {
         _isLoading.value = true
         _errorMessage.value = ""  // Limpiar cualquier mensaje de error anterior
 
-        RetrofitInstance.api.getPlot(plotId, sessionToken).enqueue(object : Callback<GetPlotResponse> {
+        FarmInstance.api.getPlot(plotId, sessionToken).enqueue(object : Callback<GetPlotResponse> {
             override fun onResponse(call: Call<GetPlotResponse>, response: Response<GetPlotResponse>) {
                 _isLoading.value = false
                 if (response.isSuccessful) {

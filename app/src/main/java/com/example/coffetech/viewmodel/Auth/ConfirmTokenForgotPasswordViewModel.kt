@@ -9,7 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.example.coffetech.Routes.Routes
-import com.example.coffetech.model.RetrofitInstance
+import com.example.coffetech.model.AuthRetrofitInstance
 import com.example.coffetech.model.VerifyRequest
 import com.example.coffetech.model.VerifyResponse
 import org.json.JSONObject
@@ -65,7 +65,7 @@ class ConfirmTokenForgotPasswordViewModel : ViewModel() {
         isLoading.value = true // Indicate that the loading process has started
 
         // Make a network call to verify the token
-        RetrofitInstance.api.confirmForgotPassword(verifyRequest).enqueue(object : Callback<VerifyResponse> {
+        AuthRetrofitInstance.api.confirmForgotPassword(verifyRequest).enqueue(object : Callback<VerifyResponse> {
             override fun onResponse(call: Call<VerifyResponse>, response: Response<VerifyResponse>) {
                 isLoading.value = false // End the loading process
 

@@ -128,6 +128,8 @@ class SharedPreferencesHelper(context: Context) {
             putString("user_email", email)
             apply()
         }
+           Log.e("SharedPreferences", "Datos guardados - token: $token")
+
     }
 
     // Función para verificar si el usuario está logueado

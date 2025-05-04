@@ -18,6 +18,7 @@ import com.example.coffetech.utils.SharedPreferencesHelper
 import androidx.compose.runtime.State
 
 import androidx.compose.runtime.mutableStateOf
+import com.example.coffetech.model.FarmInstance
 
 
 data class Farm(
@@ -158,7 +159,7 @@ class FarmViewModel : ViewModel() {
 
         isLoading.value = true
 
-        RetrofitInstance.api.listFarms(sessionToken).enqueue(object : Callback<ListFarmResponse> {
+        FarmInstance.api.listFarms(sessionToken).enqueue(object : Callback<ListFarmResponse> {
             override fun onResponse(call: Call<ListFarmResponse>, response: Response<ListFarmResponse>) {
                 isLoading.value = false
                 if (response.isSuccessful) {
@@ -170,7 +171,7 @@ class FarmViewModel : ViewModel() {
                                     farm_id = farmResponse.farm_id,
                                     name = farmResponse.name,
                                     area = farmResponse.area.toInt(),  // Convertir a Int si es necesario
-                                    unit_of_measure = farmResponse.unit_of_measure,
+                                    unit_of_measure = farmResponse.area_unit,
                                     role = farmResponse.role
                                 )
                             }

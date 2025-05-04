@@ -15,6 +15,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import com.example.coffetech.Routes.Routes
+import com.example.coffetech.model.AuthRetrofitInstance
 import com.example.coffetech.utils.SharedPreferencesHelper
 
 class HeaderFooterViewModel : ViewModel() {
@@ -52,7 +53,7 @@ class HeaderFooterViewModel : ViewModel() {
         isLoading.value = true // Activar estado de carga
 
         val logoutRequest = LogoutRequest(session_token = sessionToken)
-        RetrofitInstance.api.logoutUser(logoutRequest).enqueue(object : Callback<LogoutResponse> {
+        AuthRetrofitInstance.api.logoutUser(logoutRequest).enqueue(object : Callback<LogoutResponse> {
             override fun onResponse(call: Call<LogoutResponse>, response: Response<LogoutResponse>) {
                 if (response.isSuccessful) {
                     val logoutResponse = response.body()

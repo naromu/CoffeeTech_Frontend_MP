@@ -63,7 +63,7 @@ fun FarmEditView(
     // Obtener los estados del ViewModel
     val farmNameState by viewModel.farmName.collectAsState()
     val farmAreaState by viewModel.farmArea.collectAsState()
-    val selectedUnit by viewModel.selectedUnit.collectAsState()
+    val selectedUnit by viewModel.selectedUnitName.collectAsState()
     val areaUnits by viewModel.areaUnits.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()

@@ -7,10 +7,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import androidx.navigation.NavController
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import com.example.coffetech.model.CreateFarmRequest
 import com.example.coffetech.model.CreateFarmResponse
+import com.example.coffetech.model.FarmInstance
+import com.example.coffetech.model.FarmService
 import com.example.coffetech.model.RetrofitInstance
+import com.example.coffetech.model.UnitMeasure
 import com.example.coffetech.utils.SharedPreferencesHelper
 import org.json.JSONObject
 import retrofit2.Call
@@ -29,17 +33,22 @@ class CreateFarmViewModel : ViewModel() {
     private val _farmArea = MutableStateFlow("")
     val farmArea: StateFlow<String> = _farmArea.asStateFlow()
 
+    private val _areaUnitsList = MutableStateFlow<List<UnitMeasure>>(emptyList())
+    val areaUnitsList: StateFlow<List<UnitMeasure>> = _areaUnitsList
+
     private val _areaUnits = MutableStateFlow<List<String>>(emptyList())
     val areaUnits: StateFlow<List<String>> = _areaUnits.asStateFlow()
 
-    private val _selectedUnit = MutableStateFlow("Seleccione una opción")
-    val selectedUnit: StateFlow<String> = _selectedUnit.asStateFlow()
 
     var errorMessage = MutableStateFlow("")
         private set
     var isLoading = MutableStateFlow(false)
         private set
 
+    private val _selectedUnitName = MutableStateFlow("Seleccione una opción")
+    val selectedUnitName: StateFlow<String> = _selectedUnitName.asStateFlow()
+
+    private val _selectedUnitId = MutableStateFlow<Int?>(null)
 
     /**
      * Updates the farm name when the user modifies it.
@@ -62,9 +71,19 @@ class CreateFarmViewModel : ViewModel() {
      *
      * @param newUnit The new unit of measure selected by the user.
      */
-    fun onUnitChange(newUnit: String) {
-        _selectedUnit.value = newUnit
+    fun onUnitChange(newUnitName: String) {
+        _selectedUnitName.value = newUnitName
+        val selectedUnit = _areaUnitsList.value.find { it.name == newUnitName }
+
+        if (selectedUnit != null) {
+            _selectedUnitId.value = selectedUnit.area_unit_id
+            Log.d("CreateFarm", "Unidad seleccionada: ${selectedUnit.name} (ID: ${selectedUnit.area_unit_id})")
+        } else {
+            Log.e("CreateFarm", "No se encontró la unidad con nombre: $newUnitName")
+            _selectedUnitId.value = null
+        }
     }
+
     /**
      * Loads the available unit measures from SharedPreferences.
      *
@@ -74,9 +93,14 @@ class CreateFarmViewModel : ViewModel() {
         val sharedPreferencesHelper = SharedPreferencesHelper(context)
         val units = sharedPreferencesHelper.getUnitMeasures()
         if (!units.isNullOrEmpty()) {
-            val areaUnitsList = units.filter { it.unit_of_measure_type.name == "Área" }
-                .map { it.name }
-            _areaUnits.value = areaUnitsList
+            _areaUnitsList.value = units
+            val areaUnitNames = units.map { it.name }
+            _areaUnits.value = areaUnitNames
+
+            // Añade este log para verificar los datos cargados
+            Log.d("CreateFarm", "Unidades cargadas: ${units.joinToString { "${it.name} (ID: ${it.area_unit_id})" }}")
+        } else {
+            Log.e("CreateFarm", "No se encontraron unidades de medida")
         }
     }
     /**
@@ -102,8 +126,8 @@ class CreateFarmViewModel : ViewModel() {
         }
 
         // Validación de la unidad seleccionada
-        if (_selectedUnit.value == "Seleccione una opción") {
-            errorMessage.value = "Debe seleccionar una la unidad de medida."
+        if (_selectedUnitName.value == "Seleccione una opción") {
+            errorMessage.value = "Debe seleccionar una unidad de medida."
             return false
         }
 
@@ -135,11 +159,14 @@ class CreateFarmViewModel : ViewModel() {
         val createFarmRequest = CreateFarmRequest(
             name = _farmName.value,
             area = _farmArea.value.toDouble(),
-            unitMeasure = _selectedUnit.value
+            area_unit_id = _selectedUnitId.value ?: throw IllegalStateException("Debe seleccionar una unidad")
         )
 
+        Log.e("CreateFarm", "Solicitud a enviar: $createFarmRequest")
+
+
         // Realizar la solicitud al servidor
-        RetrofitInstance.api.createFarm(sessionToken, createFarmRequest).enqueue(object :
+        FarmInstance.api.createFarm(sessionToken, createFarmRequest).enqueue(object :
             Callback<CreateFarmResponse> {
             override fun onResponse(call: Call<CreateFarmResponse>, response: Response<CreateFarmResponse>) {
                 isLoading.value = false
@@ -147,6 +174,8 @@ class CreateFarmViewModel : ViewModel() {
                     val responseBody = response.body()
                     responseBody?.let {
                         if (it.status == "success") {
+                            Log.e("CreateFarm", "Finca creada exitosamente")
+
                             Toast.makeText(context, "Finca creada exitosamente", Toast.LENGTH_LONG).show()
                             navController.popBackStack() // Regresar a la pantalla anterior
                         } else {
@@ -165,9 +194,13 @@ class CreateFarmViewModel : ViewModel() {
                                 "Error desconocido al crear la finca."
                             }
                             this@CreateFarmViewModel.errorMessage.value = errorMessage
+                            Log.e("CreateFarm", errorMessage)
+
                             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                         } catch (e: Exception) {
                             this@CreateFarmViewModel.errorMessage.value = "Error al procesar la respuesta del servidor."
+                            Log.e("CreateFarm", "Error al procesar la respuesta del servidor." )
+
                             Toast.makeText(context, "Error al procesar la respuesta del servidor.", Toast.LENGTH_LONG).show()
                         }
                     } ?: run {
