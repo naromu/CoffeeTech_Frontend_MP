@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.coffetech.common.TopBarWithBackArrow
-import com.example.coffetech.model.Detection
 import com.example.coffetech.model.DetectionHistory
 import com.example.coffetech.view.components.CsvFloatingActionButton
 import com.example.coffetech.view.components.HealthStatusBarChart

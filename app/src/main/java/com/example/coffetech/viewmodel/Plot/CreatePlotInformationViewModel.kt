@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import android.net.Uri
+import com.example.coffetech.model.CoffeeVariety
+
 /**
  * ViewModel responsible for managing the state and logic of creating plot information,
  * including handling plot name and coffee variety selection.
@@ -19,21 +21,28 @@ class CreatePlotInformationViewModel(
     private val savedStateHandle: SavedStateHandle // Agregamos SavedStateHandle
 ) : ViewModel() {
 
+    private val _coffeeVarietyList = MutableStateFlow<List<CoffeeVariety>>(emptyList())
+    val coffeeVarietyList: StateFlow<List<CoffeeVariety>> = _coffeeVarietyList
+
+    private val _coffeeVarietyNames = MutableStateFlow<List<String>>(emptyList())
+    val coffeeVarietyNames: StateFlow<List<String>> = _coffeeVarietyNames.asStateFlow()
+
+    private val _selectedVarietyId = MutableStateFlow<Int?>(null)
+    val selectedVarietyId: StateFlow<Int?> = _selectedVarietyId.asStateFlow()
+
+    private val _selectedVarietyName = MutableStateFlow("Seleccione una variedad")
+    val selectedVarietyName: StateFlow<String> = _selectedVarietyName.asStateFlow()
+
+
     // Usamos SavedStateHandle para mantener el estado
     private val _plotName = MutableStateFlow(savedStateHandle.get<String>("plotName") ?: "")
     val plotName: StateFlow<String> = _plotName.asStateFlow()
-
-    private val _selectedVariety = MutableStateFlow(savedStateHandle.get<String>("selectedVariety") ?: "")
-    val selectedVariety: StateFlow<String> = _selectedVariety.asStateFlow()
 
     private val _errorMessage = MutableStateFlow("")
     val errorMessage: StateFlow<String> = _errorMessage.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
-
-    private val _plotCoffeeVariety = MutableStateFlow<List<String>>(emptyList())
-    val plotCoffeeVariety: StateFlow<List<String>> = _plotCoffeeVariety.asStateFlow()
 
     /**
      * Updates the plot name when the user modifies it.
@@ -52,10 +61,15 @@ class CreatePlotInformationViewModel(
      *
      * @param newVariety The new coffee variety selected by the user.
      */
-    fun onVarietyChange(newVariety: String) {
-        _selectedVariety.value = newVariety
-        savedStateHandle["selectedVariety"] = newVariety // Guardamos en SavedStateHandle
+    fun onVarietyChange(newVarietyName: String) {
+        _selectedVarietyName.value = newVarietyName
+        savedStateHandle["selectedVariety"] = newVarietyName
+
+        val selectedVariety = _coffeeVarietyList.value.find { it.name == newVarietyName }
+        _selectedVarietyId.value = selectedVariety?.coffee_variety_id
     }
+
+
     /**
      * Validates the input fields for creating plot information.
      *
@@ -75,18 +89,18 @@ class CreatePlotInformationViewModel(
      * @param farmId The ID of the farm to which the plot belongs.
      */
     fun saveAndNavigateToPlotMap(navController: NavController, farmId: Int) {
-        if (!validateInputs()) {
+        if (!validateInputs() || _selectedVarietyId.value == null) {
+            _errorMessage.value = "Debe seleccionar una variedad válida."
             return
         }
 
-        // Si la validación es exitosa, limpia el mensaje de error
         _errorMessage.value = ""
 
-        // Navegar pasando farmId, plotName y selectedVariety codificados en la URL
         navController.navigate(
-            "createMapPlotView/$farmId/${Uri.encode(_plotName.value)}/${Uri.encode(_selectedVariety.value)}"
+            "createMapPlotView/$farmId/${Uri.encode(_plotName.value)}/${_selectedVarietyId.value}"
         )
     }
+
 
 
     /**
@@ -98,11 +112,15 @@ class CreatePlotInformationViewModel(
         viewModelScope.launch {
             _isLoading.value = true
             val sharedPreferencesHelper = SharedPreferencesHelper(context)
-            val varieties = sharedPreferencesHelper.getCoffeeVarieties() ?: listOf("Variedad 1", "Variedad 2")
-            _plotCoffeeVariety.value = varieties
+            val varieties = sharedPreferencesHelper.getCoffeeVarieties() ?: emptyList()
+            _coffeeVarietyList.value = varieties
+            _coffeeVarietyNames.value = varieties.map { it.name }  // aquí sí usamos .name
             _isLoading.value = false
         }
     }
+
+
+
 
 
 }

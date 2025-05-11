@@ -78,11 +78,11 @@ fun CollaboratorView(
     val isLoading by viewModel.isLoading
     val errorMessage by viewModel.errorMessage
     val roles by viewModel.roles.collectAsState()
-    val userHasPermissionAddCollaborators = viewModel.hasPermission("add_administrador_farm" ) ||viewModel.hasPermission("add_operador_farm" )
+    val userHasPermissionAddCollaborators = viewModel.hasPermission("add_administrator_farm" ) ||viewModel.hasPermission("add_operator_farm" )
     val userHasPermissionReadCollaborators = viewModel.hasPermission("read_collaborators")
 
-    val canEditAdministrador = viewModel.hasPermission("edit_administrador_farm")
-    val canEditOperador = viewModel.hasPermission("edit_operador_farm")
+    val canEditAdministrador = viewModel.hasPermission("edit_administrator_farm")
+    val canEditOperador = viewModel.hasPermission("edit_operator_farm")
     // Header and Footer layout with content in between
 
     HeaderFooterSubView(

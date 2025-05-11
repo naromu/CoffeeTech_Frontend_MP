@@ -3,13 +3,11 @@
 package com.example.coffetech.viewmodel.Plot
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.coffetech.model.*
-import com.example.coffetech.model.RetrofitInstance
 import com.example.coffetech.utils.SharedPreferencesHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -49,6 +47,12 @@ class EditPlotInformationViewModel : ViewModel() {
     private val _hasChanges = MutableStateFlow(false)
     val hasChanges: StateFlow<Boolean> = _hasChanges.asStateFlow()
 
+    private val _coffeeVarietyList = MutableStateFlow<List<CoffeeVariety>>(emptyList())
+    val coffeeVarietyList: StateFlow<List<CoffeeVariety>> = _coffeeVarietyList.asStateFlow()
+
+    private val _selectedVarietyId = MutableStateFlow<Int?>(null)
+    val selectedVarietyId: StateFlow<Int?> = _selectedVarietyId.asStateFlow()
+
 
     fun onPlotNameChange(newName: String) {
         if (_plotName.value != newName) {
@@ -60,9 +64,12 @@ class EditPlotInformationViewModel : ViewModel() {
     fun onVarietyChange(newVariety: String) {
         if (_selectedVariety.value != newVariety) {
             _selectedVariety.value = newVariety
+            val selected = _coffeeVarietyList.value.find { it.name == newVariety }
+            _selectedVarietyId.value = selected?.coffee_variety_id
             _hasChanges.value = true
         }
     }
+
 
     /**
      * Initializes the ViewModel with the plot's current details.
@@ -95,13 +102,18 @@ class EditPlotInformationViewModel : ViewModel() {
      * Loads the available coffee varieties from SharedPreferences or other data sources.
      *
      * @param context The current context, needed for accessing SharedPreferences.
-     */    private fun loadCoffeeVarieties(context: Context) {
+     */
+    fun loadCoffeeVarieties(context: Context) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
                 val sharedPreferencesHelper = SharedPreferencesHelper(context)
-                val varieties = sharedPreferencesHelper.getCoffeeVarieties() ?: listOf("Caturra", "Bourbon")
-                _plotCoffeeVariety.value = varieties
+                val varieties = sharedPreferencesHelper.getCoffeeVarieties() ?: listOf(
+                    CoffeeVariety(1, "Caturra"),
+                    CoffeeVariety(2, "Bourbon")
+                )
+                _coffeeVarietyList.value = varieties              // ← agrega este StateFlow
+                _plotCoffeeVariety.value = varieties.map { it.name }
             } catch (e: Exception) {
                 _errorMessage.value = "Error al cargar variedades de café: ${e.message}"
                 Toast.makeText(context, _errorMessage.value, Toast.LENGTH_LONG).show()
@@ -111,6 +123,7 @@ class EditPlotInformationViewModel : ViewModel() {
         }
     }
 
+
     /**
      * Saves the changes made to the plot's information and updates the server.
      *
@@ -118,7 +131,8 @@ class EditPlotInformationViewModel : ViewModel() {
      * @param navController The NavController for navigation after successful update.
      * @param onSuccess Callback function to execute upon successful update.
      * @param onError Callback function to execute upon encountering an error.
-     */    fun saveChanges(
+     */
+    fun saveChanges(
         plotId: Int,
         navController: NavController,
         onSuccess: () -> Unit,
@@ -146,7 +160,7 @@ class EditPlotInformationViewModel : ViewModel() {
         val updateRequest = UpdatePlotGeneralInfoRequest(
             plot_id = plotId,
             name = _plotName.value,
-            coffee_variety_name = _selectedVariety.value
+            coffee_variety_id = _selectedVarietyId.value ?: 0 // ← usa el ID
         )
 
         _isLoading.value = true
@@ -199,5 +213,39 @@ class EditPlotInformationViewModel : ViewModel() {
                 }
             })
     }
+
+    fun deletePlot(context: Context, plotId: Int, navController: NavController) {
+        val sharedPreferencesHelper = SharedPreferencesHelper(context)
+        val sessionToken = sharedPreferencesHelper.getSessionToken()
+
+        if (sessionToken.isNullOrEmpty()) {
+            _errorMessage.value = "No se encontró el token de sesión."
+            Toast.makeText(context, "Error: No se encontró el token de sesión. Por favor, inicia sesión nuevamente.", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        _isLoading.value = true
+
+        FarmInstance.api.deletePlot(plotId, sessionToken).enqueue(object : Callback<CreateFarmResponse> {
+            override fun onResponse(call: Call<CreateFarmResponse>, response: Response<CreateFarmResponse>) {
+                _isLoading.value = false
+                if (response.isSuccessful) {
+                    Toast.makeText(context, "Lote eliminado correctamente.", Toast.LENGTH_LONG).show()
+                    navController.popBackStack()
+                    navController.popBackStack()
+                } else {
+                    _errorMessage.value = "Error al eliminar el lote."
+                    Toast.makeText(context, "Error al eliminar el lote.", Toast.LENGTH_LONG).show()
+                }
+            }
+
+            override fun onFailure(call: Call<CreateFarmResponse>, t: Throwable) {
+                _isLoading.value = false
+                _errorMessage.value = "Error de conexión"
+                Toast.makeText(context, "Error de conexión", Toast.LENGTH_LONG).show()
+            }
+        })
+    }
+
 
 }

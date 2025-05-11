@@ -51,10 +51,14 @@ fun CreatePlotInformationView(
     selectedVariety: String = "",
     viewModel: CreatePlotInformationViewModel = viewModel()
 ) {
+    val plotCoffeeVariety by viewModel.coffeeVarietyNames.collectAsState()
+    val currentSelectedVariety by viewModel.selectedVarietyName.collectAsState()
+    val varietyNames by viewModel.coffeeVarietyNames.collectAsState()
+    val selectedVarietyName by viewModel.selectedVarietyName.collectAsState()
+
+
     val currentPlotName by viewModel.plotName.collectAsState()
-    val currentSelectedVariety by viewModel.selectedVariety.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
-    val plotCoffeeVariety by viewModel.plotCoffeeVariety.collectAsState()
 
     // Variable para indicar si el formulario fue enviado
     val isFormSubmitted = remember { mutableStateOf(false) }
@@ -158,13 +162,15 @@ fun CreatePlotInformationView(
 
                 // Dropdown para seleccionar variedad de café
                 VarietyCoffeeDropdown(
-                    selectedVariety = currentSelectedVariety,
+                    selectedVariety = selectedVarietyName,
                     onVarietyChange = { viewModel.onVarietyChange(it) },
-                    varieties = plotCoffeeVariety,
+                    varieties = varietyNames,
                     expandedArrowDropUp = painterResource(id = R.drawable.arrowdropup_icon),
                     arrowDropDown = painterResource(id = R.drawable.arrowdropdown_icon),
                     modifier = Modifier.fillMaxWidth()
                 )
+
+
 
                 // Mensaje de error para la variedad de café
                 if (currentSelectedVariety.isEmpty() && isFormSubmitted.value) {

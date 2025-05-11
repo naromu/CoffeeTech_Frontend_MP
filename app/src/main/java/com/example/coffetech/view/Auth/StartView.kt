@@ -200,8 +200,8 @@ data class CardData(val title: String, val description: String, val backgroundCo
 fun getCardsData(): List<CardData> {
     return listOf(
         CardData(
-            title = "Chequeos de salud con IA",
-            description = "Detecta plagas, deficiencias nutricionales y maduración con IA de forma precisa.",
+            title = "Autenticación y seguridad",
+            description = "Regístrate, inicia sesión y protege tu acceso fácilmente.",
             backgroundColor = Color.White
         ),
         CardData(
@@ -215,23 +215,8 @@ fun getCardsData(): List<CardData> {
             backgroundColor = Color.White
         ),
         CardData(
-            title = "Control de floraciones",
-            description = "Registra floraciones y sigue el progreso hasta la cosecha.",
-            backgroundColor = Color.White
-        ),
-        CardData(
-            title = "Tareas culturales optimizadas",
-            description = "Organiza labores y asegura cumplimiento en cada lote.",
-            backgroundColor = Color.White
-        ),
-        CardData(
-            title = "Reportes de rendimiento",
+            title = "Reportes Financieros",
             description = "Consulta informes para evaluar y mejorar tu rendimiento.",
-            backgroundColor = Color.White
-        ),
-        CardData(
-            title = "Autenticación y seguridad",
-            description = "Regístrate, inicia sesión y protege tu acceso fácilmente.",
             backgroundColor = Color.White
         )
     )

@@ -10,6 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,14 +52,12 @@ fun FarmEditView(
     viewModel: FarmEditViewModel = viewModel()
 ) {
     val context = LocalContext.current
+    val showDeleteConfirmation = remember { mutableStateOf(false) }
 
     // Inicializar el ViewModel con los valores originales
     LaunchedEffect(Unit) {
-        viewModel.initializeValues(farmName, farmArea, unitOfMeasure)
-        viewModel.onFarmNameChange(farmName)
-        viewModel.onFarmAreaChange(farmArea)
-        viewModel.onUnitChange(unitOfMeasure)
         viewModel.loadUnitMeasuresFromSharedPreferences(context)
+        viewModel.initializeValues(farmName, farmArea, unitOfMeasure)
     }
 
     // Obtener los estados del ViewModel
@@ -216,6 +216,85 @@ fun FarmEditView(
                     buttonType = ButtonType.Green,
                     enabled = hasChanges && !isLoading
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                ReusableButton(
+                    text = if (isLoading) "Cargando..." else "Eliminar",
+                    onClick = { showDeleteConfirmation.value = true },
+                    enabled = !isLoading,
+                    modifier = Modifier
+                        .size(width = 160.dp, height = 48.dp)
+                        .align(Alignment.CenterHorizontally),
+                    buttonType = ButtonType.Red,
+                )
+
+                if (showDeleteConfirmation.value) {
+                    AlertDialog(
+                        containerColor = Color.White,
+                        modifier = Modifier.background(Color.Transparent),
+                        onDismissRequest = { showDeleteConfirmation.value = false },
+                        title = {
+                            Text(
+                                text = "¡Esta acción es irreversible!",
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black,
+                                textAlign = TextAlign.Center,
+                            )
+                        },
+                        text = {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "Esta finca se eliminará permanentemente. ¿Deseas continuar?",
+                                    color = Color.Black,
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        },
+                        confirmButton = {
+                            Column(  // 👈 Envolvemos los botones en una Column
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                ReusableButton(
+                                    text = if (isLoading) "Eliminando..." else "Eliminar",
+                                    onClick = {
+                                        viewModel.deleteFarm(
+                                            farmId = farmId,
+                                            navController = navController,
+                                            context = context
+                                        )
+                                        showDeleteConfirmation.value = false
+                                    },
+                                    modifier = Modifier
+                                        .padding(8.dp)
+                                        .fillMaxWidth(0.7f),
+                                    buttonType = ButtonType.Red,
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))  // 👈 Espacio entre botones
+
+                                ReusableButton(
+                                    text = "Cancelar",
+                                    onClick = { showDeleteConfirmation.value = false },
+                                    modifier = Modifier
+                                        .padding(8.dp)
+                                        .fillMaxWidth(0.7f),
+                                    buttonType = ButtonType.Green,
+                                )
+                            }
+                        },
+                        dismissButton = null,  // 👈 Importante: establecer a null para evitar el botón por defecto
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                }
             }
         }
     }

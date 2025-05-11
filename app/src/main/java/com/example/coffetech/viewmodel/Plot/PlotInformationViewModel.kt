@@ -72,35 +72,6 @@ class PlotInformationViewModel : ViewModel() {
 
         navController.navigate("EditPlotInformationView/$plotId/$plotName/$selectedVariety")
     }
-    /**
-     * Navigates to the EditFaseView with the specified phase details.
-     *
-     * @param navController The NavController for navigation.
-     * @param faseName The name of the phase to edit.
-     * @param initialDate The initial date of the phase.
-     * @param endDate The end date of the phase.
-     */
-    fun onEditFase(navController: NavController, faseName: String, initialDate: String, endDate: String) {
-        navController.navigate("PlotEditView/$faseName/$initialDate/$endDate")
-    }
-    /**
-     * Navigates to the EditUbicationView with the specified coordinates.
-     *
-     * @param navController The NavController for navigation.
-     * @param coordinatesUbication The coordinates of the plot's location.
-     */
-    fun onEditUbication(navController: NavController, coordinatesUbication: String) {
-        navController.navigate("PlotEditView/$coordinatesUbication")
-    }
-    /**
-     * Navigates to the FloracionesView for managing plot flowering events.
-     *
-     * @param navController The NavController for navigation.
-     * @param plotId The ID of the plot for which to manage flowering events.
-     */
-    fun onFloracionesClick(navController: NavController, plotId: Int) {
-        navController.navigate("FloracionesView/$plotId")
-    }
 
     /**
      * Sets an error message to be displayed in the UI.

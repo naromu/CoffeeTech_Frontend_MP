@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.navigation.NavController
 import com.example.coffetech.utils.SharedPreferencesHelper
 import androidx.compose.runtime.State
+import com.example.coffetech.model.FarmInstance
 import com.example.coffetech.model.ListCollaboratorResponse
 import com.example.coffetech.model.RetrofitInstance
 import retrofit2.Call
@@ -184,7 +185,7 @@ class CollaboratorViewModel : ViewModel() {
 
         isLoading.value = true
 
-        RetrofitInstance.api.listCollaborators(farmId, sessionToken)
+        FarmInstance.api.listCollaborators(farmId, sessionToken)
             .enqueue(object : Callback<ListCollaboratorResponse> {
                 override fun onResponse(
                     call: Call<ListCollaboratorResponse>,
@@ -198,9 +199,9 @@ class CollaboratorViewModel : ViewModel() {
                                 val collaboratorsList = it.data.map { collaboratorResponse ->
                                     Collaborator(
                                         user_id = collaboratorResponse.user_id,
-                                        name = collaboratorResponse.name,
-                                        email = collaboratorResponse.email,
-                                        role = collaboratorResponse.role
+                                        name = collaboratorResponse.user_name,
+                                        email = collaboratorResponse.user_email,
+                                        role = collaboratorResponse.role_name
                                     )
                                 }
                                 Log.d("CollaboratorViewModel", "Lista de colaboradores recibida: $collaboratorsList")

@@ -133,11 +133,11 @@ data class CoffeeVariety(
 
 data class CreatePlotRequest(
     val name: String,
-    val coffee_variety_name: String,
+    val coffee_variety_id: Int,
     val latitude: String,
     val longitude: String,
     val altitude: String,
-    val farm_id: Int
+    val farm_id: Int,
 )
 
 
@@ -147,9 +147,7 @@ data class Plot(
     val coffee_variety_name: String,
     val latitude: String,
     val longitude: String,
-    val altitude: String,
-    val area: Double,
-    val area_unit: String
+    val altitude: String
 )
 
 data class ListPlotsResponse(
@@ -183,7 +181,7 @@ data class PlotDataWrapper(
 data class UpdatePlotGeneralInfoRequest(
     val plot_id: Int,
     val name: String,
-    val coffee_variety_name: String
+    val coffee_variety_id: Int
 )
 
 /**
@@ -223,6 +221,39 @@ data class PlotLocationData(
 )
 
 
+//colaboradores
+
+
+data class ListCollaboratorResponse(
+    val status: String,
+    val message: String,
+    val data: List<CollaboratorResponse>
+)
+
+data class CollaboratorResponse(
+    val user_role_id: Int,
+    val user_id: Int,
+    val user_name: String,
+    val user_email: String,
+    val role_id: Int,
+    val role_name: String
+
+)
+
+// Data class for editing collaborator request
+data class EditCollaboratorRequest(
+    val collaborator_user_id: Int,
+    val new_role: String
+)
+
+// Data class for editing collaborator response
+data class EditCollaboratorResponse(
+    val status: String,
+    val message: String,
+    val data: Any? = null
+)
+
+
 interface FarmService {
 
     @POST("/farm/create-farm")
@@ -231,31 +262,28 @@ interface FarmService {
         @Body request: CreateFarmRequest
     ): Call<CreateFarmResponse>
 
-    /**
-     * Lists all farms associated with the user's account.
-     *
-     * @param sessionToken The session token of the user making the request.
-     * @return A [Call] object for the list farm response.
-     */
     @POST("/farm/list-farm")
     fun listFarms(
         @Query("session_token") sessionToken: String
     ): Call<ListFarmResponse>
 
-
-    // Método corregido para obtener los detalles de la finca
     @GET("/farm/get-farm/{farm_id}")
     fun getFarm(
         @Path("farm_id") farmId: Int,
         @Query("session_token") sessionToken: String
     ): Call<GetFarmResponse>
 
-
     @POST("/farm/update-farm")
     fun updateFarm(
         @Query("session_token") sessionToken: String,
         @Body request: UpdateFarmRequest
     ): Call<UpdateFarmResponse>
+
+    @POST("/farm/delete-farm/{farm_id}")
+    fun deleteFarm(
+        @Path("farm_id") farmId: Int,
+        @Query("session_token") sessionToken: String
+    ): Call<CreateFarmResponse>
 
 
     //plots
@@ -290,23 +318,42 @@ interface FarmService {
         @Body request: UpdatePlotLocationRequest
     ): Call<UpdatePlotLocationResponse>
 
+    @POST("/plots/delete-plot/{plot_id}")
+    fun deletePlot(
+        @Path("plot_id") plotId: Int,
+        @Query("session_token") sessionToken: String
+    ): Call<CreateFarmResponse>
+
+
+
+    //Colaboradores
+
+    @GET("/collaborators/list-collaborators")
+    fun listCollaborators(
+        @Query("farm_id") farmId: Int,
+        @Query("session_token") sessionToken: String
+    ): Call<ListCollaboratorResponse>
+
+    @POST("/collaborators/edit-collaborator-role")
+    fun editCollaboratorRole(
+        @Query("farm_id") farmId: Int,
+        @Query("session_token") sessionToken: String,
+        @Body request: EditCollaboratorRequest
+    ): Call<EditCollaboratorResponse>
+
+    @POST("/collaborators/delete-collaborator")
+    fun deleteCollaborator(
+        @Query("farm_id") farmId: Int,
+        @Query("session_token") sessionToken: String,
+        @Body requestBody: Map<String, Int>
+    ): Call<Void>
+
+
     //utiliadades
 
-    /**
-     * Retrieves a list of unit measures.
-     *
-     * @return A [Call] object for the unit measures response.
-     */
+
     @GET("/utils/area-units")
     fun getUnitMeasures(): Call<ApiResponse<List<UnitMeasure>>>
-
-    /**
-     * Creates a new farm.
-     *
-     * @param sessionToken The session token of the user making the request.
-     * @param request The request payload containing farm details.
-     * @return A [Call] object for the create farm response.
-     */
 
     @GET("/utils/list-coffee-varieties")
     fun getCoffeeVarieties(): Call<ApiResponse<List<CoffeeVariety>>>

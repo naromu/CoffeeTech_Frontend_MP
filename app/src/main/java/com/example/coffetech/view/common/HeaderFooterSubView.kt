@@ -82,9 +82,6 @@ fun HeaderFooterSubView(
                 navController = navController,
                 onHomeClick = { headerFooterSubViewModel.onHomeClick(navController) },
                 onFincasClick = { headerFooterSubViewModel.onFincasClick(navController) },
-                onCentralButtonClick = { headerFooterSubViewModel.onCentralButtonClick(context) },
-                onReportsClick = { headerFooterSubViewModel.onReportsClick(navController, context) },
-                onLaborClick = { headerFooterSubViewModel.onLaborClick(navController, context) },
             )
         }
     ) { paddingValues ->
@@ -93,7 +90,7 @@ fun HeaderFooterSubView(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .systemBarsPadding() // Ajuste total para respetar las áreas seguras del sistema
+                .systemBarsPadding()
         ) {
             content()
         }

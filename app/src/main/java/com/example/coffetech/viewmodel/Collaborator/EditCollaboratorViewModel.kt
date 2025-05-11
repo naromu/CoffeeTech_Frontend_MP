@@ -9,6 +9,7 @@ import android.content.Context
 import android.widget.Toast
 import com.example.coffetech.model.EditCollaboratorRequest
 import com.example.coffetech.model.EditCollaboratorResponse
+import com.example.coffetech.model.FarmInstance
 import com.example.coffetech.model.RetrofitInstance
 import com.example.coffetech.utils.SharedPreferencesHelper
 import retrofit2.Call
@@ -130,7 +131,7 @@ class EditCollaboratorViewModel : ViewModel() {
         )
 
         // Llamar a la API para editar el colaborador
-        RetrofitInstance.api.editCollaboratorRole(farmId, sessionToken, request).enqueue(object : Callback<EditCollaboratorResponse> {
+        FarmInstance.api.editCollaboratorRole(farmId, sessionToken, request).enqueue(object : Callback<EditCollaboratorResponse> {
             override fun onResponse(call: Call<EditCollaboratorResponse>, response: Response<EditCollaboratorResponse>) {
                 isLoading.value = false
                 if (response.isSuccessful) {
@@ -199,7 +200,7 @@ class EditCollaboratorViewModel : ViewModel() {
         val requestBody = mapOf("collaborator_user_id" to collaboratorId)
 
         // Llamar a la API para eliminar el colaborador
-        RetrofitInstance.api.deleteCollaborator(farmId, sessionToken, requestBody).enqueue(object : Callback<Void> {
+        FarmInstance.api.deleteCollaborator(farmId, sessionToken, requestBody).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 isLoading.value = false
                 if (response.isSuccessful) {
@@ -218,6 +219,5 @@ class EditCollaboratorViewModel : ViewModel() {
             }
         })
     }
-
 
 }

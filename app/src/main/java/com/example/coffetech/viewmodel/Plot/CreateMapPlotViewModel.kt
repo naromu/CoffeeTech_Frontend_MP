@@ -265,7 +265,7 @@ class PlotViewModel : ViewModel() {
      * @param plotName The name of the new plot.
      * @param coffeeVarietyName The variety of coffee planted in the plot.
      */
-    fun onCreatePlot(navController: NavController, context: Context, farmId: Int, plotName: String, coffeeVarietyName: String) {
+    fun onCreatePlot(navController: NavController, context: Context, farmId: Int, plotName: String, coffeeVarietyId: Int) {
         if (latitude.value.isBlank() || longitude.value.isBlank() || plotName.isBlank()) {
             _errorMessage.value = "Todos los campos deben estar completos."
             Toast.makeText(context, "Error: Todos los campos deben estar completos.", Toast.LENGTH_LONG).show()
@@ -284,7 +284,7 @@ class PlotViewModel : ViewModel() {
 
         val request = CreatePlotRequest(
             name = plotName,
-            coffee_variety_name = coffeeVarietyName,
+            coffee_variety_id = coffeeVarietyId,
             latitude = latitude.value,
             longitude = longitude.value,
             altitude = altitude.value.toString(),

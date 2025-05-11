@@ -80,11 +80,8 @@ class CommonDataViewModel : ViewModel() {
                 if (response.isSuccessful && response.body()?.data != null) {
                     val coffeeVarieties = response.body()?.data!!
 
-                    // Extraer los nombres de las variedades de café para almacenarlos
-                    val varietyNames = coffeeVarieties.map { it.name }
-
                     // Guardar las variedades de café en SharedPreferences
-                    sharedPreferencesHelper.saveCoffeeVarieties(varietyNames)
+                    sharedPreferencesHelper.saveCoffeeVarieties(coffeeVarieties)
                     Log.d("fetchCoffeeVarieties", "Variedades de café almacenadas correctamente")
                 } else {
                     Log.e("fetchCoffeeVarieties", "Error: ${response.message()}")

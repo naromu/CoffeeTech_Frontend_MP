@@ -238,44 +238,39 @@ fun EditCollaboratorView(
 
                 //Confirmación para eliminar colaborador
                 if (showDeleteConfirmation.value) {
-                    Box(
-                        modifier = Modifier
-                    ) {
-                        AlertDialog(
-                            containerColor = Color.White,
-                            modifier = Modifier
-                                .background(Color.Transparent),
-                            onDismissRequest = { showDeleteConfirmation.value = false },
-                            title = {
+                    AlertDialog(
+                        containerColor = Color.White,
+                        modifier = Modifier.background(Color.Transparent),
+                        onDismissRequest = { showDeleteConfirmation.value = false },
+                        title = {
+                            Text(
+                                text = "¡Esta acción es irreversible!",
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black,
+                                textAlign = TextAlign.Center,
+                            )
+                        },
+                        text = {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
                                 Text(
-                                    text = "¡Esta acción es irreversible!",
-                                    fontWeight = FontWeight.Bold,
+                                    text = "Este colaborador se eliminará permanentemente de tu lote. ¿Deseas continuar?",
                                     color = Color.Black,
+                                    fontWeight = FontWeight.Bold,
                                     textAlign = TextAlign.Center,
+                                    modifier = Modifier.fillMaxWidth()
                                 )
-                            },
-                            text = {
-                                // Contenedor para el contenido del diálogo
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp), // Espacio alrededor del contenido
-                                    horizontalAlignment = Alignment.CenterHorizontally // Centrar el contenido
-                                ) {
-                                    // Descripción centrada
-                                    Text(
-                                        text = "Este colaborador se eliminará permanentemente de tu lote. ¿Deseas continuar?",
-                                        color = Color.Black,
-                                        fontWeight = FontWeight.Bold,
-                                        textAlign = TextAlign.Center,
-                                        modifier = Modifier.fillMaxWidth()
-                                    )
-                                }
-                            },
-
-
-                            confirmButton = {
-                                // Botón para eliminar centrado
+                            }
+                        },
+                        confirmButton = {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
                                 ReusableButton(
                                     text = if (isLoading) "Eliminando..." else "Eliminar",
                                     onClick = {
@@ -292,9 +287,9 @@ fun EditCollaboratorView(
                                         .fillMaxWidth(0.7f),
                                     buttonType = ButtonType.Red,
                                 )
-                            },
-                            dismissButton = {
-                                // Botón cancelar
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
                                 ReusableButton(
                                     text = "Cancelar",
                                     onClick = { showDeleteConfirmation.value = false },
@@ -303,11 +298,11 @@ fun EditCollaboratorView(
                                         .fillMaxWidth(0.7f),
                                     buttonType = ButtonType.Green,
                                 )
-                            },
-
-                            shape = RoundedCornerShape(16.dp) // Esquinas redondeadas del diálogo
-                        )
-                    }
+                            }
+                        },
+                        dismissButton = null,
+                        shape = RoundedCornerShape(16.dp)
+                    )
                 }
 
 

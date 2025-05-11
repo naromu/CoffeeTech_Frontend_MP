@@ -59,6 +59,7 @@ fun EditPlotInformationView(
     Log.d(TAG, "Composable EditPlotInformationView iniciado con plotId: $plotId, plotName: $plotName, selectedVariety: $selectedVariety")
 
     val context = LocalContext.current
+    val showDeleteConfirmation = remember { mutableStateOf(false) }
 
     // Obtener los estados del ViewModel
     val currentPlotName by viewModel.plotName.collectAsState()
@@ -199,6 +200,85 @@ fun EditPlotInformationView(
                     buttonType = ButtonType.Red,
                     enabled = hasChanges && !isLoading
                 )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                ReusableButton(
+                    text = if (isLoading) "Cargando..." else "Eliminar",
+                    onClick = { showDeleteConfirmation.value = true },
+                    enabled = !isLoading,
+                    modifier = Modifier
+                        .size(width = 160.dp, height = 48.dp)
+                        .align(Alignment.CenterHorizontally),
+                    buttonType = ButtonType.Red,
+                )
+
+                if (showDeleteConfirmation.value) {
+                    AlertDialog(
+                        containerColor = Color.White,
+                        modifier = Modifier.background(Color.Transparent),
+                        onDismissRequest = { showDeleteConfirmation.value = false },
+                        title = {
+                            Text(
+                                text = "¡Esta acción es irreversible!",
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black,
+                                textAlign = TextAlign.Center,
+                            )
+                        },
+                        text = {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "Este lote se eliminará permanentemente. ¿Deseas continuar?",
+                                    color = Color.Black,
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        },
+                        confirmButton = {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                ReusableButton(
+                                    text = if (isLoading) "Eliminando..." else "Eliminar",
+                                    onClick = {
+                                        viewModel.deletePlot(
+                                            context = context,
+                                            plotId = plotId,
+                                            navController = navController
+                                        )
+                                        showDeleteConfirmation.value = false
+                                    },
+                                    modifier = Modifier
+                                        .padding(8.dp)
+                                        .fillMaxWidth(0.7f),
+                                    buttonType = ButtonType.Red,
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                ReusableButton(
+                                    text = "Cancelar",
+                                    onClick = { showDeleteConfirmation.value = false },
+                                    modifier = Modifier
+                                        .padding(8.dp)
+                                        .fillMaxWidth(0.7f),
+                                    buttonType = ButtonType.Green,
+                                )
+                            }
+                        },
+                        dismissButton = null,
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                }
+
             }
         }
     }

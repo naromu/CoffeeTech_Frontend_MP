@@ -380,7 +380,7 @@ fun CreateMapPlotView(
                                                 context = context,
                                                 farmId = farmId,
                                                 plotName = plotName,
-                                                coffeeVarietyName = selectedVariety
+                                                coffeeVarietyId = selectedVariety.toInt()
                                             )
                                         },
                                         modifier = Modifier

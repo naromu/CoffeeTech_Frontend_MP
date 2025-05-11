@@ -14,7 +14,10 @@ import com.example.coffetech.model.CreateFarmRequest
 import com.example.coffetech.model.CreateFarmResponse
 import com.example.coffetech.model.CreateInvitationRequest
 import com.example.coffetech.model.CreateInvitationResponse
+import com.example.coffetech.model.FarmInstance
+import com.example.coffetech.model.InvitationInstance
 import com.example.coffetech.model.RetrofitInstance
+import com.example.coffetech.model.Role
 import com.example.coffetech.utils.SharedPreferencesHelper
 import org.json.JSONObject
 import retrofit2.Call
@@ -46,6 +49,18 @@ class AddCollaboratorViewModel : ViewModel() {
     var isLoading = MutableStateFlow(false)
         private set
 
+    private val _roleList = MutableStateFlow<List<Role>>(emptyList())  // guarda objetos Role completos
+    val roleList: StateFlow<List<Role>> = _roleList
+
+    private val _collaboratorRoleNames = MutableStateFlow<List<String>>(emptyList())  // solo los nombres para el dropdown
+    val collaboratorRoleNames: StateFlow<List<String>> = _collaboratorRoleNames.asStateFlow()
+
+    private val _selectedRoleName = MutableStateFlow("Seleccione un rol")
+    val selectedRoleName: StateFlow<String> = _selectedRoleName.asStateFlow()
+
+    private val _selectedRoleId = MutableStateFlow<Int?>(null)
+
+
     private val _permissions = MutableStateFlow<List<String>>(emptyList())
     /**
      * Updates the collaborator's email when the user modifies it.
@@ -60,9 +75,18 @@ class AddCollaboratorViewModel : ViewModel() {
      *
      * @param newRole The new role selected by the user.
      */
-    fun onCollaboratorRoleChange(newRole: String) {
-        _selectedRole.value = newRole
+    fun onCollaboratorRoleChange(newRoleName: String) {
+        _selectedRoleName.value = newRoleName
+        val selectedRole = _roleList.value.find { it.name == newRoleName }
+        if (selectedRole != null) {
+            _selectedRoleId.value = selectedRole.role_id
+            Log.d("AddCollaboratorVM", "Rol seleccionado: ${selectedRole.name} (ID: ${selectedRole.role_id})")
+        } else {
+            Log.e("AddCollaboratorVM", "No se encontró el rol con nombre: $newRoleName")
+            _selectedRoleId.value = null
+        }
     }
+
     /**
      * Loads the available roles from SharedPreferences.
      *
@@ -83,23 +107,25 @@ class AddCollaboratorViewModel : ViewModel() {
     fun loadRolesForCollaborator(context: Context, userRole: String) {
         val sharedPreferencesHelper = SharedPreferencesHelper(context)
         val roles = sharedPreferencesHelper.getRoles()
+        _roleList.value = roles ?: emptyList()
 
-        // Buscar el rol del usuario y sus permisos
-        roles?.find { it.name == userRole }?.let { role ->
-            _permissions.value = role.permissions.map { it.name }
+        val allowedRoles = mutableListOf<Role>()
 
-            // Determinar roles permitidos en función de permisos
-            val allowedRoles = mutableListOf<String>()
-            if (_permissions.value.contains("add_administrador_farm")) {
-                allowedRoles.add("Administrador de finca")
+        roles?.find { it.name == userRole }?.let { currentRole ->
+            _permissions.value = currentRole.permissions.map { it.name }
+
+            if (_permissions.value.contains("add_administrator_farm")) {
+                roles.find { it.name == "Administrador de finca" }?.let { allowedRoles.add(it) }
             }
-            if (_permissions.value.contains("add_operador_farm")) {
-                allowedRoles.add("Operador de campo")
+            if (_permissions.value.contains("add_operator_farm")) {
+                roles.find { it.name == "Operador de campo" }?.let { allowedRoles.add(it) }
             }
-            _collaboratorRole.value = allowedRoles
-            Log.d("AddCollaboratorVM", "Roles disponibles según permisos: $allowedRoles")
         }
+
+        _roleList.value = allowedRoles
+        _collaboratorRoleNames.value = allowedRoles.map { it.name }
     }
+
 
     /**
      * Validates the input fields for adding a collaborator.
@@ -119,7 +145,7 @@ class AddCollaboratorViewModel : ViewModel() {
         }
 
         // Validación del rol seleccionado
-        if (_selectedRole.value == "Seleccione un rol") {
+        if (_selectedRoleName.value == "Seleccione un rol") {
             errorMessage.value = "Debe seleccionar un rol válido."
             return false
         }
@@ -154,12 +180,16 @@ class AddCollaboratorViewModel : ViewModel() {
         // Crear el objeto de solicitud
         val createInvitationRequest = CreateInvitationRequest(
             email = _collaboratorEmail.value,
-            suggested_role = _selectedRole.value,
+            suggested_role_id = _selectedRoleId.value ?: throw IllegalStateException("Debe seleccionar un rol"),
             farm_id = farmId
         )
+        Log.d("AddCollaboratorViewModel", "CreateInvitationRequest: $createInvitationRequest")
+
+
+
 
         // Realizar la solicitud al servidor
-        RetrofitInstance.api.createInvitation(sessionToken, createInvitationRequest).enqueue(object :
+        InvitationInstance.api.createInvitation(sessionToken, createInvitationRequest).enqueue(object :
             Callback<CreateInvitationResponse> {
             override fun onResponse(call: Call<CreateInvitationResponse>, response: Response<CreateInvitationResponse>) {
                 isLoading.value = false

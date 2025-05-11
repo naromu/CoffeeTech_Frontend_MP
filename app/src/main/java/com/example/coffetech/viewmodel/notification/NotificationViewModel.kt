@@ -5,7 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.coffetech.model.ApiResponse
+import com.example.coffetech.model.FarmInstance
+import com.example.coffetech.model.InvitationInstance
 import com.example.coffetech.model.Notification
+import com.example.coffetech.model.NotificationInstance
 import com.example.coffetech.model.NotificationResponse
 import com.example.coffetech.model.RetrofitInstance
 import com.example.coffetech.utils.SharedPreferencesHelper
@@ -15,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -42,8 +46,8 @@ class NotificationViewModel : ViewModel() {
     // Notificaciones ordenadas
     val sortedNotifications: StateFlow<List<Notification>> = combine(_notifications, _sortOrder) { notifications, sortOrder ->
         when (sortOrder) {
-            "Más antiguo" -> notifications.sortedBy { it.date }
-            "Más reciente" -> notifications.sortedByDescending { it.date }
+            "Más antiguo" -> notifications.sortedBy { it.notification_date }
+            "Más reciente" -> notifications.sortedByDescending { it.notification_date }
             else -> notifications
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -79,7 +83,7 @@ class NotificationViewModel : ViewModel() {
         isLoading.value = true
         Log.d("NotificationViewModel", "Iniciando la carga de notificaciones...")
 
-        RetrofitInstance.api.getNotifications(sessionToken).enqueue(object : Callback<NotificationResponse> {
+        NotificationInstance.api.getNotifications(sessionToken).enqueue(object : Callback<NotificationResponse> {
             override fun onResponse(call: Call<NotificationResponse>, response: Response<NotificationResponse>) {
                 isLoading.value = false
                 Log.d("NotificationViewModel", "Respuesta recibida. Código de respuesta: ${response.code()}")
@@ -89,36 +93,8 @@ class NotificationViewModel : ViewModel() {
                     Log.d("NotificationViewModel", "Respuesta exitosa. Cuerpo de la respuesta: $responseBody")
 
                     responseBody?.let { notificationResponse ->
-                        val data = notificationResponse.data
-                        if (data is List<*>) {
-                            _notifications.value = data.mapNotNull { item ->
-                                try {
-                                    val notificationMap = item as Map<String, Any>
-                                    Notification(
-                                        message = notificationMap["message"] as? String ?: "",
-                                        date = notificationMap["date"] as? String ?: "",
-                                        notification_type = notificationMap["notification_type"] as? String ?: "",
-                                        farm_id = (notificationMap["farm_id"] as? Double)?.toInt() ?: 0,
-                                        reminder_time = notificationMap["reminder_time"] as? String,
-                                        notifications_id = (notificationMap["notifications_id"] as? Double)?.toInt() ?: 0,
-                                        user_id = (notificationMap["user_id"] as? Double)?.toInt() ?: 0,
-                                        invitation_id = (notificationMap["invitation_id"] as? Double)?.toInt() ?: 0,
-                                        notification_type_id = (notificationMap["notification_type_id"] as? Double)?.toInt(),
-                                        status = notificationMap["status"] as? String ?: ""
-                                    )
-                                } catch (e: Exception) {
-                                    Log.e("NotificationViewModel", "Error al convertir notificación: $e")
-                                    null
-                                }
-                            }
-                            Log.d("NotificationViewModel", "Notificaciones recibidas: ${_notifications.value}")
-                        } else if (data is Map<*, *> && data.isEmpty()) {
-                            _notifications.value = emptyList()
-                            Log.d("NotificationViewModel", "No hay notificaciones, data es un objeto vacío.")
-                        } else {
-                            Log.e("NotificationViewModel", "Formato de datos inesperado en la respuesta: $data")
-                            errorMessage.value = "Error al procesar las notificaciones."
-                        }
+                        _notifications.value = notificationResponse.data
+                        Log.d("NotificationViewModel", "Notificaciones recibidas: ${_notifications.value}")
                     } ?: run {
                         Log.w("NotificationViewModel", "El cuerpo de la respuesta es null, asignando lista vacía a notificaciones")
                         _notifications.value = emptyList()
@@ -136,7 +112,6 @@ class NotificationViewModel : ViewModel() {
             }
         })
     }
-
 
 
 
@@ -158,21 +133,22 @@ class NotificationViewModel : ViewModel() {
     ) {
         val sharedPreferencesHelper = SharedPreferencesHelper(context)
         val sessionToken = sharedPreferencesHelper.getSessionToken()
+            ?: return onFailure("No se encontró el token de sesión.")
 
-        if (sessionToken == null) {
-            onFailure("No se encontró el token de sesión.")
-            return
-        }
+        val validInvitationId = invitationId
+            ?: return onFailure("ID inválido")
 
-        // Verificar que invitationId no sea nulo
-        val validInvitationId = invitationId ?: run {
-            onFailure("ID de invitación inválido.")
-            return
-        }
+        Log.d("NotificationViewModel", "Datos que se enviarán:")
+        Log.d("NotificationViewModel", "invitationId: $validInvitationId")
+        Log.d("NotificationViewModel", "action: $action")
+        Log.d("NotificationViewModel", "sessionToken: $sessionToken")
 
-        RetrofitInstance.api.respondInvitation(validInvitationId, action, sessionToken)
+        InvitationInstance.api.respondInvitation(validInvitationId, action, sessionToken)
             .enqueue(object : Callback<ApiResponse<Any>> {
-                override fun onResponse(call: Call<ApiResponse<Any>>, response: Response<ApiResponse<Any>>) {
+                override fun onResponse(
+                    call: Call<ApiResponse<Any>>,
+                    response: Response<ApiResponse<Any>>
+                ) {
                     if (response.isSuccessful) {
                         response.body()?.let {
                             if (it.status == "success") {
@@ -185,7 +161,17 @@ class NotificationViewModel : ViewModel() {
                             onFailure("Respuesta vacía del servidor.")
                         }
                     } else {
-                        onFailure("Error: ${response.message()}")
+                        // Aquí extraemos message del errorBody JSON:
+                        val errorBody = response.errorBody()?.string()
+                        val serverMessage = try {
+                            JSONObject(errorBody ?: "").optString(
+                                "message",
+                                "Error desconocido del servidor"
+                            )
+                        } catch (e: Exception) {
+                            "Error desconocido del servidor"
+                        }
+                        onFailure(serverMessage)
                     }
                 }
 

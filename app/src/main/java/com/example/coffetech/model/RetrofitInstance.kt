@@ -39,6 +39,40 @@ object FarmInstance {
     }
 }
 
+object NotificationInstance {
+    private const val BASE_URL = "http://173.212.224.226:8001"
+
+    private val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(AuthInterceptor())
+        .build()
+
+    val api: NotificationService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(NotificationService::class.java)
+    }
+}
+
+object InvitationInstance {
+    private const val BASE_URL = "http://173.212.224.226:8003"
+
+    private val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(AuthInterceptor())
+        .build()
+
+    val api: InvitationService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(InvitationService::class.java)
+    }
+}
+
 
 object RetrofitInstance {
     private const val BASE_URL = "https://prueba-production-1b78.up.railway.app"

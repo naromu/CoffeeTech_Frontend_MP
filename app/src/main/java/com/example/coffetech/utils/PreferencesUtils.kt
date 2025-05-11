@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.util.Log
+import com.example.coffetech.model.CoffeeVariety
 import com.example.coffetech.model.Role
 import com.example.coffetech.model.UnitMeasure
 import com.google.gson.Gson
@@ -175,14 +176,18 @@ class SharedPreferencesHelper(context: Context) {
     // ============================= MANEJO DE VARIEDADES DE CAFÉ ============================= //
 
     // Función para guardar las variedades de café
-    fun saveCoffeeVarieties(varieties: List<String>) {
-        val editor = sharedPref.edit()
-        editor.putStringSet("coffee_varieties", varieties.toSet())
-        editor.apply()
+    fun saveCoffeeVarieties(varieties: List<CoffeeVariety>) {
+        val gson = Gson()
+        val json = gson.toJson(varieties)
+        sharedPref.edit().putString("coffee_varieties", json).apply()
     }
 
+
     // Función para obtener las variedades de café
-    fun getCoffeeVarieties(): List<String>? {
-        return sharedPref.getStringSet("coffee_varieties", null)?.toList()
+    fun getCoffeeVarieties(): List<CoffeeVariety>? {
+        val gson = Gson()
+        val json = sharedPref.getString("coffee_varieties", null)
+        val type = object : TypeToken<List<CoffeeVariety>>() {}.type
+        return if (json != null) gson.fromJson(json, type) else null
     }
 }

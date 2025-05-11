@@ -1,16 +1,21 @@
 package com.example.coffetech.common
 
 
+import android.widget.DatePicker
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -18,6 +23,119 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.coffetech.R
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DatePickerComposable(
+    label: String,
+    selectedDate: String?,
+    onDateSelected: (String) -> Unit,
+    onClearDate: (() -> Unit)? = null,
+    errorMessage: String? = null,
+    enabled: Boolean = true
+) {
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+
+    // Formateador de fecha
+    val dateFormat = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
+
+    // Convertir la fecha seleccionada a Calendar si no es nula
+    selectedDate?.let {
+        try {
+            val date = dateFormat.parse(it)
+            date?.let { parsedDate ->
+                calendar.time = parsedDate
+            }
+        } catch (e: Exception) {
+            // Manejar el error de parsing si es necesario
+        }
+    }
+
+    var showDialog by remember { mutableStateOf(false) }
+
+    // Estilos similares a ReusableTextField
+    Column(modifier = Modifier.fillMaxWidth()) {
+        OutlinedTextField(
+            value = selectedDate ?: "",
+            onValueChange = {},
+            label = { Text(text = label) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(enabled = enabled) { if (enabled) showDialog = true }, // Condicional
+            enabled = false, // Deshabilitar la edición manual
+            trailingIcon = {
+                Row {
+                    // Ícono de eliminar, visible solo si hay una fecha seleccionada y se ha proporcionado onClearDate
+                    if (!selectedDate.isNullOrEmpty() && onClearDate != null) {
+                        IconButton(
+                            onClick = { onClearDate() },
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Eliminar fecha",
+                                tint = Color.Gray,
+                                modifier = Modifier.size(40.dp)
+
+                            )
+                        }
+                    }
+                }
+            },
+            isError = errorMessage != null,
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+                focusedPlaceholderColor = Color.Gray,
+                unfocusedPlaceholderColor = Color.Gray,
+                focusedBorderColor = if (errorMessage != null) Color.Red else Color(0xFF5D8032),
+                unfocusedBorderColor = if (errorMessage != null) Color.Red else Color.Gray,
+                disabledBorderColor = Color.Gray,
+                containerColor = Color.White,
+                errorBorderColor = Color.Red
+            ),
+            shape = RoundedCornerShape(4.dp),
+            textStyle = MaterialTheme.typography.bodyMedium.copy(
+                color = Color.Black,
+                fontSize = 16.sp
+            )
+        )
+        if (errorMessage != null) {
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+            )
+        }
+
+        if (showDialog) {
+            android.app.DatePickerDialog(
+                context,
+                { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+                    calendar.set(year, month, dayOfMonth)
+                    val selected = dateFormat.format(calendar.time)
+                    onDateSelected(selected)
+                    showDialog = false
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            ).apply {
+                setOnCancelListener {
+                    showDialog = false
+                }
+                show()
+            }
+        }
+    }
+}
+
 
 @Composable
 fun TransactionTypeDropdown(

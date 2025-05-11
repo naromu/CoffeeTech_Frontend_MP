@@ -177,29 +177,8 @@ fun PlotInformationView(
 
                             Spacer(modifier = Modifier.height(16.dp))
 
-                    ActionCard(
-                        buttonText = "Floraciones",
-                        onClick = {
-                            Log.d("EditFloweringView", "Enviando datos : /$plotId/$plotName/$farmName/$farmId")
-
-                            navController.navigate("${Routes.FloweringInformationView}/$plotId/$plotName/$farmName/$farmId")
-                        },
-                        modifier = Modifier
-                            .padding(start = 2.5.dp)
-                    )
                             ActionCard(
-                                buttonText = "Labores culturales",
-                                onClick = {
-                                    Log.d("EditFloweringView", "Enviando datos : /$plotId/$plotName/$farmName/$farmId")
-
-                                    navController.navigate("${Routes.CulturalWorkTaskInformationView}/$plotId/$plotName/$farmName/$farmId")
-                                },
-                                modifier = Modifier
-
-                                    .padding(start = 2.5.dp)
-                            )
-                            ActionCard(
-                                buttonText = "Costos",
+                                buttonText = "Transacciones",
                                 onClick = {
                                     Log.d("EditFloweringView", "Enviando datos : /$plotId/$plotName/$farmName/$farmId")
 
@@ -209,26 +188,7 @@ fun PlotInformationView(
 
                                     .padding(start = 2.5.dp)
                             )
-                            ActionCard(
-                                buttonText = "Historial de chequeos",
-                                onClick = {
 
-                                    navController.navigate("${Routes.DetectionHistoryView}/$plotId/$plotName/$farmName/$farmId")
-                                },
-                                modifier = Modifier
-
-                                    .padding(start = 2.5.dp)
-                            )
-                            Spacer(modifier = Modifier.height(50.dp))
-
-                    Text(
-                        text = "Historial de detecciones",
-                        fontSize = 18.sp,
-                        color = Color.Black,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-
-                    // Implementa las tarjetas de historial de detecciones aquí
                 }
             }
         }

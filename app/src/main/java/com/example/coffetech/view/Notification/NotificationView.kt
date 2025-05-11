@@ -57,8 +57,8 @@ fun NotificationView(
 
     val sortedNotifications = remember(selectedOrder, notifications) {
         when (selectedOrder) {
-            "Más antiguo" -> notifications.sortedBy { it.date }
-            "Más reciente" -> notifications.sortedByDescending { it.date }
+            "Más antiguo" -> notifications.sortedBy { it.notification_date }
+            "Más reciente" -> notifications.sortedByDescending { it.notification_date}
             else -> notifications
         }
     }
@@ -111,12 +111,12 @@ fun NotificationView(
                                 else -> "Notificación"
                             },
                             description = notification.message,
-                            date = formatNotificationDate(notification.date),
-                            onRejectClick = if (notification.notification_type == "Invitation" && notification.status == "Pendiente") {
+                            date = formatNotificationDate(notification.notification_date),
+                            onRejectClick = if (notification.notification_type == "Invitation" && notification.notification_state == "Pendiente") {
                                 {
                                     viewModel.respondToInvitation(
                                         context,
-                                        notification.invitation_id ?: 0,
+                                        notification.entity_id ?: 0,
                                         "reject",
                                         onSuccess = {
                                             viewModel.loadNotifications(context)
@@ -127,11 +127,11 @@ fun NotificationView(
                                     )
                                 }
                             } else null,
-                            onAcceptClick = if (notification.notification_type == "Invitation" && notification.status == "Pendiente") {
+                            onAcceptClick = if (notification.notification_type == "Invitation" && notification.notification_state == "Pendiente") {
                                 {
                                     viewModel.respondToInvitation(
                                         context,
-                                        notification.invitation_id ?: 0,
+                                        notification.entity_id ?: 0,
                                         "accept",
                                         onSuccess = {
                                             viewModel.loadNotifications(context)

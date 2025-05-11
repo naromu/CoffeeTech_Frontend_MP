@@ -57,6 +57,8 @@ fun AddCollaboratorView(
     val isLoading by viewModel.isLoading.collectAsState()
     val scrollState = rememberScrollState()
 
+    val collaboratorRoleNames by viewModel.collaboratorRoleNames.collectAsState()
+    val selectedRoleName by viewModel.selectedRoleName.collectAsState()
 
     val isFormSubmitted = remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
@@ -148,9 +150,9 @@ fun AddCollaboratorView(
 
                 // Rol seleccionado
                 RoleAddDropdown(
-                    selectedRole = selectedRole,
+                    selectedRole = selectedRoleName,
                     onCollaboratorRoleChange = { viewModel.onCollaboratorRoleChange(it) },
-                    roles = collaboratorRole,  // Lista de roles obtenida del ViewModel
+                    roles = collaboratorRoleNames,
                     expandedArrowDropUp = painterResource(id = R.drawable.arrowdropup_icon),
                     arrowDropDown = painterResource(id = R.drawable.arrowdropdown_icon),
                     modifier = Modifier.fillMaxWidth()

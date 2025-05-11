@@ -98,6 +98,7 @@ class FarmEditViewModel : ViewModel() {
         _farmArea.value = newArea
         checkForChanges()
     }
+
     /**
      * Updates the selected unit of measure when the user selects a new unit.
      *
@@ -114,6 +115,8 @@ class FarmEditViewModel : ViewModel() {
             Log.e("CreateFarm", "No se encontró la unidad con nombre: $newUnitName")
             _selectedUnitId.value = null
         }
+        checkForChanges()
+
     }
     /**
      * Checks if any changes have been made to the farm details.
@@ -123,6 +126,7 @@ class FarmEditViewModel : ViewModel() {
                 _farmArea.value != initialFarmArea ||
                 _selectedUnitName.value != initialSelectedUnit
     }
+
 
     /**
      * Loads the available unit measures from SharedPreferences.
@@ -243,6 +247,41 @@ class FarmEditViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<UpdateFarmResponse>, t: Throwable) {
+                isLoading.value = false
+                errorMessage.value = "Error de conexión"
+                Toast.makeText(context, "Error de conexión", Toast.LENGTH_LONG).show()
+            }
+        })
+    }
+
+    fun deleteFarm(
+        farmId: Int,
+        navController: NavController,
+        context: Context
+    ) {
+        val sharedPreferencesHelper = SharedPreferencesHelper(context)
+        val sessionToken = sharedPreferencesHelper.getSessionToken() ?: run {
+            errorMessage.value = "No se encontró el token de sesión."
+            Toast.makeText(context, "Error: No se encontró el token de sesión. Por favor, inicia sesión nuevamente.", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        isLoading.value = true
+
+        FarmInstance.api.deleteFarm(farmId, sessionToken).enqueue(object : Callback<CreateFarmResponse> {
+            override fun onResponse(call: Call<CreateFarmResponse>, response: Response<CreateFarmResponse>) {
+                isLoading.value = false
+                if (response.isSuccessful) {
+                    Toast.makeText(context, "Finca eliminada correctamente.", Toast.LENGTH_LONG).show()
+                    navController.popBackStack()
+                    navController.popBackStack()
+                } else {
+                    errorMessage.value = "Error al eliminar la finca."
+                    Toast.makeText(context, "Error al eliminar la finca.", Toast.LENGTH_LONG).show()
+                }
+            }
+
+            override fun onFailure(call: Call<CreateFarmResponse>, t: Throwable) {
                 isLoading.value = false
                 errorMessage.value = "Error de conexión"
                 Toast.makeText(context, "Error de conexión", Toast.LENGTH_LONG).show()

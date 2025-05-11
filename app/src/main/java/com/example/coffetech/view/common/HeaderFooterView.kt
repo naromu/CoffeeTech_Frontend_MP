@@ -73,10 +73,7 @@ fun HeaderFooterView(
                 currentView = currentView,
                 navController = navController,
                 onHomeClick = { headerFooterViewModel.onHomeClick(navController) },
-                onFincasClick = { headerFooterViewModel.onFincasClick(navController) },
-                onCentralButtonClick = { headerFooterViewModel.onCentralButtonClick(context) },
-                onLaborClick = { headerFooterViewModel.onLaborClick(navController, context) },
-                onReportsClick = { headerFooterViewModel.onReportsClick(navController, context) },
+                onFincasClick = { headerFooterViewModel.onFincasClick(navController) }
             )
         }
     ) { paddingValues ->
@@ -317,9 +314,6 @@ fun BottomNavigationBar(
     navController: NavController,
     onHomeClick: () -> Unit,
     onFincasClick: () -> Unit,
-    onCentralButtonClick: () -> Unit,
-    onReportsClick: () -> Unit,
-    onLaborClick: () -> Unit,
     modifier: Modifier = Modifier
 
 ) {
@@ -384,60 +378,6 @@ fun BottomNavigationBar(
                 )
             }
         }
-
-
-
-        IconButton(
-            onClick = onLaborClick,
-            modifier = Modifier
-                .weight(1f)
-                .size(90.dp)
-                .padding(vertical = 8.dp)
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxHeight()
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.labor_icon),
-                    contentDescription = "Labores",
-                    tint = if (currentView == "Labores") Color(0xFFB31D34) else Color(0xFF9A9A9A),
-                    modifier = Modifier.size(30.dp)
-                )
-                Text(
-                    text = "Labores",
-                    color = if (currentView == "Labores") Color(0xFFB31D34) else Color(0xFF9A9A9A),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-        }
-        /*
-        IconButton(
-            onClick = onReportsClick,
-            modifier = Modifier
-                .weight(1f)
-                .padding(vertical = 8.dp)
-                .size(90.dp)
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxHeight()
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.reports_icon),
-                    contentDescription = "Reportes",
-                    tint = if (currentView == "Reportes") Color(0xFFB31D34) else Color(0xFF9A9A9A),
-                    modifier = Modifier.size(30.dp)
-                )
-                Text(
-                    text = "Reportes",
-                    color = if (currentView == "Reportes") Color(0xFFB31D34) else Color(0xFF9A9A9A),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-        }*/
     }
 }
 
@@ -476,9 +416,6 @@ fun BottomNavigationBarPreview() {
         currentView= "Home",
         navController = navController,
         onHomeClick = {},
-        onFincasClick = {},
-        onCentralButtonClick = {},
-        onReportsClick = {},
-        onLaborClick = {}
+        onFincasClick = {}
     )
 }
