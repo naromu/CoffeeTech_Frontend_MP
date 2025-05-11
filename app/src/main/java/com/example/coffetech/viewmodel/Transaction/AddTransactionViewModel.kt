@@ -10,6 +10,11 @@ import androidx.navigation.NavController
 import com.example.coffetech.model.CreateTransactionRequest
 import com.example.coffetech.model.CreateTransactionResponse
 import com.example.coffetech.model.RetrofitInstance
+import com.example.coffetech.model.TransactionCategory
+import com.example.coffetech.model.TransactionCategoryResponse
+import com.example.coffetech.model.TransactionInstance
+import com.example.coffetech.model.TransactionType
+import com.example.coffetech.model.TransactionTypeResponse
 import com.example.coffetech.utils.SharedPreferencesHelper
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -75,11 +80,19 @@ class AddTransactionViewModel : ViewModel() {
     private val _errorMessage = MutableStateFlow("")
     val errorMessage: StateFlow<String> = _errorMessage.asStateFlow()
 
+    private val _transactionTypeList = MutableStateFlow<List<TransactionType>>(emptyList())
+    private val _transactionCategoryList = MutableStateFlow<List<TransactionCategory>>(emptyList())
+
+    private val _selectedTransactionTypeId = MutableStateFlow<Int?>(null)
+    private val _selectedTransactionCategoryId = MutableStateFlow<Int?>(null)
+
+
     // Indica si el formulario ha sido enviado para mostrar errores
     private val _isFormSubmitted = MutableStateFlow(false)
     val isFormSubmitted: StateFlow<Boolean> = _isFormSubmitted.asStateFlow()
 
     init {
+        loadTransactionTypesAndCategories()
         viewModelScope.launch {
             // Validación de los campos
             val fieldsValidFlow = combine(
@@ -108,34 +121,60 @@ class AddTransactionViewModel : ViewModel() {
         }
     }
 
+    fun loadTransactionTypesAndCategories() {
+        // Cargar tipos
+        TransactionInstance.api.getTransactionTypes().enqueue(object : Callback<TransactionTypeResponse> {
+            override fun onResponse(call: Call<TransactionTypeResponse>, response: Response<TransactionTypeResponse>) {
+                response.body()?.data?.transaction_types?.let { types ->
+                    _transactionTypeList.value = types
+                    _transactionTypes.value = types.map { it.name }
+                }
+            }
+
+            override fun onFailure(call: Call<TransactionTypeResponse>, t: Throwable) {
+                Log.e("AddTransactionVM", "Error cargando tipos", t)
+            }
+        })
+
+        // Cargar categorías
+        TransactionInstance.api.getTransactionCategories().enqueue(object : Callback<TransactionCategoryResponse> {
+            override fun onResponse(call: Call<TransactionCategoryResponse>, response: Response<TransactionCategoryResponse>) {
+                response.body()?.data?.transaction_categories?.let { categories ->
+                    _transactionCategoryList.value = categories
+                }
+            }
+
+            override fun onFailure(call: Call<TransactionCategoryResponse>, t: Throwable) {
+                Log.e("AddTransactionVM", "Error cargando categorías", t)
+            }
+        })
+    }
+
+
     // Funciones para actualizar los campos y validar en tiempo real
     fun onTransactionTypeChange(newType: String) {
         _selectedTransactionType.value = newType
-        if (newType.isNotBlank()) {
-            _transactionTypeError.value = null
-        } else {
-            _transactionTypeError.value = "Seleccione tipo de transacción."
+        val selected = _transactionTypeList.value.find { it.name == newType }
+        _selectedTransactionTypeId.value = selected?.transaction_type_id
+
+        // Filtrar categorías por tipo
+        val filteredCategories = _transactionCategoryList.value.filter {
+            it.transaction_type_id == selected?.transaction_type_id
         }
 
-        // Actualizar las categorías basadas en el tipo
-        _transactionCategories.value = when (newType) {
-            "Ingreso" -> listOf("Venta de café", "Otros")
-            "Gasto" -> listOf("Pagos a colaboradores", "Fertilizantes", "Plaguicidas/herbicidas", "Otros")
-            else -> emptyList()
-        }
-
-        // Resetear la categoría seleccionada
+        _transactionCategories.value = filteredCategories.map { it.name }
         _selectedTransactionCategory.value = ""
+        _transactionTypeError.value = if (newType.isNotBlank()) null else "Seleccione tipo de transacción."
     }
+
 
     fun onTransactionCategoryChange(newCategory: String) {
         _selectedTransactionCategory.value = newCategory
-        if (newCategory.isNotBlank()) {
-            _transactionCategoryError.value = null
-        } else {
-            _transactionCategoryError.value = "Seleccione categoría de transacción."
-        }
+        val selected = _transactionCategoryList.value.find { it.name == newCategory }
+        _selectedTransactionCategoryId.value = selected?.transaction_category_id
+        _transactionCategoryError.value = if (newCategory.isNotBlank()) null else "Seleccione categoría de transacción."
     }
+
 
     fun onValorChange(newValor: String) {
         _valor.value = newValor
@@ -239,14 +278,13 @@ class AddTransactionViewModel : ViewModel() {
 
                     val request = CreateTransactionRequest(
                         plot_id = plotId,
-                        transaction_type_name = _selectedTransactionType.value,
-                        transaction_category_name = _selectedTransactionCategory.value, // Incluir la categoría
+                        transaction_category_id = _selectedTransactionCategoryId.value ?: return@launch,
                         description = _descripcion.value,
                         value = _valor.value.toLong(),
                         transaction_date = _fecha.value
                     )
 
-                    RetrofitInstance.api.createTransaction(
+                    TransactionInstance.api.createTransaction(
                         sessionToken = sessionToken,
                         request = request
                     ).enqueue(object : Callback<CreateTransactionResponse> {

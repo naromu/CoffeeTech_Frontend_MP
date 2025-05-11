@@ -41,6 +41,8 @@ fun EditTransactionView(
 
     // Cargar la transacción existente en el ViewModel
     LaunchedEffect(transactionId, transactionTypeName, transactionCategoryName, description, value, transactionDate) {
+        viewModel.loadTransactionTypesAndCategories()
+
         viewModel.loadTransactionData(
             transactionId,
             transactionTypeName,
@@ -347,7 +349,7 @@ fun EditTransactionViewPreview() {
         description = "Venta cafécito",
         value = 36,
         transaction_date = "2024-11-03",
-        status = "Activo"
+        transaction_state = "Activo"
     )
     CoffeTechTheme {
         EditTransactionView(

@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.example.coffetech.model.ListTransactionsResponse
 import com.example.coffetech.model.RetrofitInstance
 import com.example.coffetech.model.Transaction
+import com.example.coffetech.model.TransactionInstance
+import com.example.coffetech.model.TransactionService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -50,7 +52,7 @@ class TransactionInformationViewModel : ViewModel() {
      */
     fun loadTransactions(plotId: Int, sessionToken: String) {
         _isLoading.value = true
-        RetrofitInstance.api.listTransactions(plotId, sessionToken)
+        TransactionInstance.api.listTransactions(plotId, sessionToken)
             .enqueue(object : Callback<ListTransactionsResponse> {
                 override fun onResponse(
                     call: Call<ListTransactionsResponse>,

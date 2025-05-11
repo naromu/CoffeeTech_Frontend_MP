@@ -6,11 +6,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.navigation.NavController
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
+import com.example.coffetech.model.DeleteCollaboratorRequest
+import com.example.coffetech.model.DeleteCollaboratorResponse
 import com.example.coffetech.model.EditCollaboratorRequest
 import com.example.coffetech.model.EditCollaboratorResponse
 import com.example.coffetech.model.FarmInstance
 import com.example.coffetech.model.RetrofitInstance
+import com.example.coffetech.model.Role
 import com.example.coffetech.utils.SharedPreferencesHelper
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,6 +35,14 @@ class EditCollaboratorViewModel : ViewModel() {
         private set
     var isLoading = MutableStateFlow(false)
         private set
+
+    private val _roleList = MutableStateFlow<List<Role>>(emptyList())
+    val roleList: StateFlow<List<Role>> = _roleList
+
+    private val _selectedRoleName = MutableStateFlow("Seleccione un rol")
+    val selectedRoleName: StateFlow<String> = _selectedRoleName.asStateFlow()
+
+    private val _selectedRoleId = MutableStateFlow<Int?>(null)
 
 
     // Estado para rastrear si hay cambios pendientes
@@ -53,19 +65,24 @@ class EditCollaboratorViewModel : ViewModel() {
         val sharedPreferencesHelper = SharedPreferencesHelper(context)
         val roles = sharedPreferencesHelper.getRoles()
 
+        _roleList.value = roles ?: emptyList()
+
         roles?.find { it.name == userRole }?.let { role ->
             _permissions.value = role.permissions.map { it.name }
 
-            val allowedRoles = mutableListOf<String>()
-            if (_permissions.value.contains("edit_administrador_farm")) {
-                allowedRoles.add("Administrador de finca")
+            val allowedRoles = mutableListOf<Role>()
+            if (_permissions.value.contains("edit_administrator_farm")) {
+                roles.find { it.name == "Administrador de finca" }?.let { allowedRoles.add(it) }
             }
-            if (_permissions.value.contains("edit_operador_farm")) {
-                allowedRoles.add("Operador de campo")
+            if (_permissions.value.contains("edit_operator_farm")) {
+                roles.find { it.name == "Operador de campo" }?.let { allowedRoles.add(it) }
             }
-            _collaboratorRole.value = allowedRoles
+
+            _roleList.value = allowedRoles
+            _collaboratorRole.value = allowedRoles.map { it.name }
         }
     }
+
 
     /**
      * Initializes the ViewModel with the selected role of the collaborator.
@@ -113,6 +130,13 @@ class EditCollaboratorViewModel : ViewModel() {
     fun editCollaborator(context: Context, farmId: Int, collaboratorId: Int, navController: NavController) {
         if (!validateInputs()) return
 
+        val roleId = _selectedRoleId.value
+        if (roleId == null) {
+            errorMessage.value = "Debe seleccionar un rol válido."
+            Toast.makeText(context, "Debe seleccionar un rol válido.", Toast.LENGTH_LONG).show()
+            return
+        }
+
         val sharedPreferencesHelper = SharedPreferencesHelper(context)
         val sessionToken = sharedPreferencesHelper.getSessionToken()
 
@@ -126,17 +150,24 @@ class EditCollaboratorViewModel : ViewModel() {
 
         // Crear objeto de solicitud para editar el colaborador
         val request = EditCollaboratorRequest(
-            collaborator_user_id = collaboratorId,
-            new_role = selectedRole.value
+            collaborator_user_role_id = collaboratorId,
+            new_role_id = roleId
         )
+        Log.d("EditCollaboratorVM", "farmId: ${farmId}, sessionToken: ${sessionToken}, CollaboratorID: ${collaboratorId} ,role_id : ${roleId} )")
 
         // Llamar a la API para editar el colaborador
         FarmInstance.api.editCollaboratorRole(farmId, sessionToken, request).enqueue(object : Callback<EditCollaboratorResponse> {
             override fun onResponse(call: Call<EditCollaboratorResponse>, response: Response<EditCollaboratorResponse>) {
                 isLoading.value = false
+                Log.d("EditCollaborator", "Response code: ${response.code()}")
+                Log.d("EditCollaborator", "Response body: ${response.body()}")
+                Log.d("EditCollaborator", "Response errorBody: ${response.errorBody()?.string()}")
+
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     responseBody?.let {
+                        Log.d("EditCollaborator", "API status: ${it.status}, message: ${it.message}")
+
                         if (it.status == "success") {
                             Toast.makeText(context, "Colaborador actualizado correctamente.", Toast.LENGTH_LONG).show()
                             navController.popBackStack() // Regresar a la pantalla anterior
@@ -165,9 +196,21 @@ class EditCollaboratorViewModel : ViewModel() {
      * @param newRole The new role selected by the user.
      */
     fun onCollaboratorRoleChange(newRole: String) {
-        _selectedRole.value = newRole
+        _selectedRoleName.value = newRole
+        _selectedRole.value = newRole // opcional, si sigues usando este elsewhere
+
+        val selectedRole = _roleList.value.find { it.name == newRole }
+        if (selectedRole != null) {
+            _selectedRoleId.value = selectedRole.role_id
+            Log.d("EditCollaboratorVM", "Rol seleccionado: ${selectedRole.name} (ID: ${selectedRole.role_id})")
+        } else {
+            Log.e("EditCollaboratorVM", "No se encontró el rol con nombre: $newRole")
+            _selectedRoleId.value = null
+        }
+
         checkForChanges()
     }
+
 
     /**
      * Checks if there are any changes made to the collaborator's role.
@@ -199,9 +242,15 @@ class EditCollaboratorViewModel : ViewModel() {
         // Crear objeto de solicitud para eliminar el colaborador
         val requestBody = mapOf("collaborator_user_id" to collaboratorId)
 
+        // Crear objeto de solicitud para eliminar el colaborador
+        val request = DeleteCollaboratorRequest(
+            collaborator_user_role_id = collaboratorId
+        )
+
         // Llamar a la API para eliminar el colaborador
-        FarmInstance.api.deleteCollaborator(farmId, sessionToken, requestBody).enqueue(object : Callback<Void> {
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+
+        FarmInstance.api.deleteCollaborator(farmId, sessionToken, request).enqueue(object : Callback<DeleteCollaboratorResponse> {
+            override fun onResponse(call: Call<DeleteCollaboratorResponse>, response: Response<DeleteCollaboratorResponse>) {
                 isLoading.value = false
                 if (response.isSuccessful) {
                     Toast.makeText(context, "Colaborador eliminado correctamente.", Toast.LENGTH_LONG).show()
@@ -212,7 +261,7 @@ class EditCollaboratorViewModel : ViewModel() {
                 }
             }
 
-            override fun onFailure(call: Call<Void>, t: Throwable) {
+            override fun onFailure(call: Call<DeleteCollaboratorResponse>, t: Throwable) {
                 isLoading.value = false
                 errorMessage.value = "Error de conexión"
                 Toast.makeText(context, "Error de conexión", Toast.LENGTH_LONG).show()

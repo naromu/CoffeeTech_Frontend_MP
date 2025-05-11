@@ -18,7 +18,7 @@ data class Notification(
     val notification_id: Int,
     val message: String,
     val notification_date: String,
-    val entity_id: Int,
+    val invitation_id: Int,
     val notification_type: String,
     val notification_state: String
 )

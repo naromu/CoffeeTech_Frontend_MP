@@ -152,7 +152,7 @@ class NotificationViewModel : ViewModel() {
                     if (response.isSuccessful) {
                         response.body()?.let {
                             if (it.status == "success") {
-                                Toast.makeText(context, "Acción realizada con éxito", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Invitación aceptada con exito", Toast.LENGTH_SHORT).show()
                                 onSuccess()
                             } else {
                                 onFailure(it.message)

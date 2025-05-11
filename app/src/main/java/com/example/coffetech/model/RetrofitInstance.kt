@@ -73,6 +73,23 @@ object InvitationInstance {
     }
 }
 
+object TransactionInstance {
+    private const val BASE_URL = "http://173.212.224.226:8004"
+
+    private val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(AuthInterceptor())
+        .build()
+
+    val api: TransactionService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(TransactionService::class.java)
+    }
+}
+
 
 object RetrofitInstance {
     private const val BASE_URL = "https://prueba-production-1b78.up.railway.app"

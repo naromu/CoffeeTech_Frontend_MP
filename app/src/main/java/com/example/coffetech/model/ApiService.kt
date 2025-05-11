@@ -30,66 +30,12 @@ data class ApiResponse<T>(
 
 //Transaction
 
-data class Transaction(
-    val transaction_id: Int,
-    val plot_id: Int,
-    val transaction_type_name: String, // "Ingreso" o "Gasto"
-    val transaction_category_name: String, // Nuevo campo
-    val description: String?,
-    val value: Long,
-    val transaction_date: String, // Formato "yyyy-MM-dd"
-    val status: String
-)
-
-data class TransactionData(
-    val transactions: List<Transaction>
-)
-
-data class ListTransactionsResponse(
-    val status: String,
-    val message: String,
-    val data: TransactionData
-)
-
-data class CreateTransactionRequest(
-    val plot_id: Int,
-    val transaction_type_name: String, // "Ingreso" o "Gasto"
-    val transaction_category_name: String, // Nuevo campo
-    val description: String,
-    val value: Long,
-    val transaction_date: String // Formato "yyyy-MM-dd"
-)
 
 
-data class CreateTransactionResponse(
-    val status: String,
-    val message: String,
-    val data: Transaction // Cambiado de TransactionData a Transaction
-)
 
-data class EditTransactionRequest(
-    val transaction_id: Int,
-    val transaction_type_name: String, // "Ingreso" o "Gasto"
-    val transaction_category_name: String, // Nuevo campo
-    val description: String,
-    val value: Long,
-    val transaction_date: String // Formato "yyyy-MM-dd"
-)
 
-data class EditTransactionResponse(
-    val status: String,
-    val message: String,
-    val data: Transaction // Similar a CreateTransactionResponse
-)
 
-data class TransactionDeleteRequest(
-    val transaction_id: Int
-)
-data class TransactionDeleteResponse(
-    val status: String,
-    val message: String,
-    val data: TransactionData?
-)
+
 
 //Reports
 data class FinancialReportResponse(
@@ -187,31 +133,6 @@ data class DetectionHistory(
 
 interface ApiService {
 
-
-    //Transaction
-    @GET("/transaction/list-transactions/{plot_id}")
-    fun listTransactions(
-        @Path("plot_id") plotId: Int,
-        @Query("session_token") sessionToken: String
-    ): Call<ListTransactionsResponse>
-
-    @POST("/transaction/create-transaction")
-    fun createTransaction(
-        @Query("session_token") sessionToken: String,
-        @Body request: CreateTransactionRequest
-    ): Call<CreateTransactionResponse>
-
-    @POST("/transaction/edit-transaction")
-    fun editTransaction(
-        @Query("session_token") sessionToken: String,
-        @Body request: EditTransactionRequest
-    ): Call<EditTransactionResponse>
-
-    @POST("/transaction/delete-transaction")
-    fun deleteTransaction(
-        @Query("session_token") sessionToken: String,
-        @Body request: TransactionDeleteRequest
-    ): Call<TransactionDeleteResponse>
 
     //Reports
     @POST("/reports/financial-report")

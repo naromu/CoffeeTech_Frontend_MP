@@ -242,8 +242,8 @@ data class CollaboratorResponse(
 
 // Data class for editing collaborator request
 data class EditCollaboratorRequest(
-    val collaborator_user_id: Int,
-    val new_role: String
+    val collaborator_user_role_id: Int,
+    val new_role_id: Int
 )
 
 // Data class for editing collaborator response
@@ -252,6 +252,18 @@ data class EditCollaboratorResponse(
     val message: String,
     val data: Any? = null
 )
+
+data class DeleteCollaboratorRequest(
+    val collaborator_user_role_id: Int
+)
+
+
+data class DeleteCollaboratorResponse(
+    val status: String,
+    val message: String,
+    val data: Any? = null
+)
+
 
 
 interface FarmService {
@@ -345,8 +357,8 @@ interface FarmService {
     fun deleteCollaborator(
         @Query("farm_id") farmId: Int,
         @Query("session_token") sessionToken: String,
-        @Body requestBody: Map<String, Int>
-    ): Call<Void>
+        @Body requestBody:DeleteCollaboratorRequest
+    ): Call<DeleteCollaboratorResponse>
 
 
     //utiliadades

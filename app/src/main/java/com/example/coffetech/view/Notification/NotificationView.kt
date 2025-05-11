@@ -116,7 +116,7 @@ fun NotificationView(
                                 {
                                     viewModel.respondToInvitation(
                                         context,
-                                        notification.entity_id ?: 0,
+                                        notification.invitation_id ?: 0,
                                         "reject",
                                         onSuccess = {
                                             viewModel.loadNotifications(context)
@@ -131,7 +131,7 @@ fun NotificationView(
                                 {
                                     viewModel.respondToInvitation(
                                         context,
-                                        notification.entity_id ?: 0,
+                                        notification.invitation_id ?: 0,
                                         "accept",
                                         onSuccess = {
                                             viewModel.loadNotifications(context)
