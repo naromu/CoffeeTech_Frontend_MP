@@ -150,7 +150,7 @@ class EditCollaboratorViewModel : ViewModel() {
 
         // Crear objeto de solicitud para editar el colaborador
         val request = EditCollaboratorRequest(
-            collaborator_user_role_id = collaboratorId,
+            collaborator_id = collaboratorId,
             new_role_id = roleId
         )
         Log.d("EditCollaboratorVM", "farmId: ${farmId}, sessionToken: ${sessionToken}, CollaboratorID: ${collaboratorId} ,role_id : ${roleId} )")
@@ -244,14 +244,20 @@ class EditCollaboratorViewModel : ViewModel() {
 
         // Crear objeto de solicitud para eliminar el colaborador
         val request = DeleteCollaboratorRequest(
-            collaborator_user_role_id = collaboratorId
+            collaborator_id = collaboratorId
         )
+        Log.d("EditCollaboratorVM", "farmId: ${farmId}, sessionToken: ${sessionToken}, collaborator_user_role_id : ${collaboratorId} )")
+
 
         // Llamar a la API para eliminar el colaborador
 
         FarmInstance.api.deleteCollaborator(farmId, sessionToken, request).enqueue(object : Callback<DeleteCollaboratorResponse> {
             override fun onResponse(call: Call<DeleteCollaboratorResponse>, response: Response<DeleteCollaboratorResponse>) {
                 isLoading.value = false
+                Log.d("EditCollaborator", "Response code: ${response.code()}")
+                Log.d("EditCollaborator", "Response body: ${response.body()}")
+                Log.d("EditCollaborator", "Response errorBody: ${response.errorBody()?.string()}")
+
                 if (response.isSuccessful) {
                     Toast.makeText(context, "Colaborador eliminado correctamente.", Toast.LENGTH_LONG).show()
                     navController.popBackStack() // Regresar a la pantalla anterior

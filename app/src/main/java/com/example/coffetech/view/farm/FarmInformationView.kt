@@ -76,7 +76,7 @@ fun FarmInformationView(
     val userHasPermissionToEditFarm = viewModel.hasPermission("edit_farm")
     val userHasPermissionToDeleteFarm = viewModel.hasPermission("delete_farm")
     val userHasPermissionReadCollaborators = viewModel.hasPermission("read_collaborators") || viewModel.hasPermission("read_collaborators")
-    val userHasPermissionReadReports = viewModel.hasPermission("read_report") || viewModel.hasPermission("read_report")
+    val userHasPermissionReadReports = viewModel.hasPermission("read_financial_report") || viewModel.hasPermission("read_report")
     val userHasPermissionReadPlots = viewModel.hasPermission("read_plots") || viewModel.hasPermission("read_plots")
     val userHasPermissionAddPlots = viewModel.hasPermission("add_plot") || viewModel.hasPermission("add_plot")
 

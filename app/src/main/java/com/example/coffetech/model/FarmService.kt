@@ -227,7 +227,7 @@ data class PlotLocationData(
 data class ListCollaboratorResponse(
     val status: String,
     val message: String,
-    val data: List<CollaboratorResponse>
+    val collaborators: List<CollaboratorResponse>
 )
 
 data class CollaboratorResponse(
@@ -242,7 +242,7 @@ data class CollaboratorResponse(
 
 // Data class for editing collaborator request
 data class EditCollaboratorRequest(
-    val collaborator_user_role_id: Int,
+    val collaborator_id: Int,
     val new_role_id: Int
 )
 
@@ -254,7 +254,7 @@ data class EditCollaboratorResponse(
 )
 
 data class DeleteCollaboratorRequest(
-    val collaborator_user_role_id: Int
+    val collaborator_id: Int
 )
 
 

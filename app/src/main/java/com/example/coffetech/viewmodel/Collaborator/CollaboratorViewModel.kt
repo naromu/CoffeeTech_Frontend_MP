@@ -196,7 +196,7 @@ class CollaboratorViewModel : ViewModel() {
                         val responseBody = response.body()
                         responseBody?.let {
                             if (it.status == "success") {
-                                val collaboratorsList = it.data.map { collaboratorResponse ->
+                                val collaboratorsList = it.collaborators.map { collaboratorResponse ->
                                     Collaborator(
                                         user_id = collaboratorResponse.user_id,
                                         name = collaboratorResponse.user_name,
