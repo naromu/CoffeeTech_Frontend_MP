@@ -18,6 +18,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.util.Log // Importación añadida para Logcat
+import com.example.coffetech.model.TransactionInstance
 
 class FinanceReportViewModel : ViewModel() {
 
@@ -76,7 +77,7 @@ class FinanceReportViewModel : ViewModel() {
 
         Log.d(TAG, "Realizando llamada a la API con request: $request")
 
-        RetrofitInstance.api.getFinancialReport(sessionToken, request)
+        TransactionInstance.api.getFinancialReport(sessionToken, request)
             .enqueue(object : Callback<FinancialReportResponse> {
                 override fun onResponse(
                     call: Call<FinancialReportResponse>,

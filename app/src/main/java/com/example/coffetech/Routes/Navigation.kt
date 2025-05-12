@@ -37,7 +37,6 @@ import com.example.coffetech.view.Plot.PlotInformationView
 import com.example.coffetech.view.Collaborator.AddCollaboratorView
 import com.example.coffetech.view.Collaborator.CollaboratorView
 import com.example.coffetech.view.Collaborator.EditCollaboratorView
-import com.example.coffetech.view.DetectionReportView
 import com.example.coffetech.view.FinanceReportView
 import com.example.coffetech.view.FormFinanceReportView
 import com.example.coffetech.view.Plot.CreateMapPlotView
@@ -51,7 +50,6 @@ import com.example.coffetech.view.farm.CreateFarmView
 import com.example.coffetech.view.farm.FarmEditView
 import com.example.coffetech.view.farm.FarmInformationView
 import com.example.coffetech.view.farm.FarmView
-import com.example.coffetech.view.reports.FormDetectionReportView
 import com.example.coffetech.view.reports.ReportsSelectionView
 import com.example.coffetech.viewmodel.Plot.CreatePlotInformationViewModel
 import com.example.coffetech.viewmodel.SharedViewModel
@@ -614,30 +612,7 @@ fun AppNavHost(context: Context) {
                 farmName = farmName
             )
         }
-
-
-        composable(
-            route = "${Routes.FormDetectionReportView}/{farmId}/{farmName}",
-            arguments = listOf(
-                navArgument("farmId") { type = NavType.IntType },
-                navArgument("farmName") { type = NavType.StringType },
-            )
-        ) { backStackEntry ->
-            val farmId = backStackEntry.arguments?.getInt("farmId") ?: 0
-            val farmName = backStackEntry.arguments?.getString("farmName") ?: ""
-
-            BackHandler {
-                // No action performed, back gesture is disabled
-            }
-            FormDetectionReportView(
-                navController = navController,
-                farmId = farmId,
-                farmName = farmName
-            )
-        }
-
-
-
+        
         composable(
             route = "financeReport/{plotIds}/{startDate}/{endDate}/{historyParam}",
             arguments = listOf(
@@ -664,26 +639,6 @@ fun AppNavHost(context: Context) {
             )
         }
 
-        composable(
-            route = "DetectionReportView/{plotIds}/{startDate}/{endDate}",
-            arguments = listOf(
-                navArgument("plotIds") { type = NavType.StringType },
-                navArgument("startDate") { type = NavType.StringType },
-                navArgument("endDate") { type = NavType.StringType },
-            )
-        ) { backStackEntry ->
-            val plotIdsParam = backStackEntry.arguments?.getString("plotIds") ?: ""
-            val startDate = backStackEntry.arguments?.getString("startDate") ?: ""
-            val endDate = backStackEntry.arguments?.getString("endDate") ?: ""
 
-            val plotIds = plotIdsParam.split(",").mapNotNull { it.toIntOrNull() }
-
-            DetectionReportView(
-                navController = navController,
-                plotIds = plotIds,
-                startDate = startDate,
-                endDate = endDate
-            )
-        }
     }
 }

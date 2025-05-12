@@ -37,32 +37,7 @@ data class ApiResponse<T>(
 
 
 
-//Reports
-data class FinancialReportResponse(
-    val status: String,
-    val message: String,
-    val data: FinancialReportData
-)
 
-data class FinancialReportData(
-    val finca_nombre: String,
-    val lotes_incluidos: List<String>,
-    val periodo: String,
-    val plot_financials: List<PlotFinancial>,
-    val farm_summary: FarmSummary,
-    val transaction_history: List<TransactionHistory>? // Campo opcional para historial de transacciones
-
-)
-
-data class TransactionHistory(
-    val date: String,
-    val plot_name: String,
-    val farm_name: String,
-    val transaction_type: String,
-    val transaction_category: String,
-    val creator_name: String,
-    val value: Long
-)
 
 data class PlotFinancial(
     val plot_id: Int,
@@ -85,14 +60,6 @@ data class FarmSummary(
 data class CategoryAmount(
     val category_name: String,
     val monto: Long
-)
-data class FinancialReportRequest(
-    val plot_ids: List<Int>,
-    val fechaInicio: String, // Formato "yyyy-MM-dd"
-    val fechaFin: String   ,  // Formato "yyyy-MM-dd"
-    val include_transaction_history: Boolean // Nuevo parámetro para incluir historial de transacciones
-
-
 )
 
 data class DetectionHistoryRequest(
@@ -135,11 +102,6 @@ interface ApiService {
 
 
     //Reports
-    @POST("/reports/financial-report")
-    fun getFinancialReport(
-        @Query("session_token") sessionToken: String,
-        @Body request: FinancialReportRequest
-    ): Call<FinancialReportResponse>
 
     @POST("/reports/detection-report")
     fun getDetectionHistory(

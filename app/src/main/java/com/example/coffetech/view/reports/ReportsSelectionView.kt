@@ -81,16 +81,6 @@ fun ReportsSelectionView(
                     onClick = {
 
                         navController.navigate("${Routes.FormFinanceReportView}/$farmId/$farmName")
-
-                       /* navController.navigate("CollaboratorView/$farmId/$farmName/$roleToSend")*/
-                    }
-                )
-
-                ActionCard(
-                    buttonText = "Reporte general de detecciones", // Texto para el primer botón
-                    onClick = {
-                        navController.navigate("${Routes.FormDetectionReportView}/$farmId/$farmName")
-
                     }
                 )
 
