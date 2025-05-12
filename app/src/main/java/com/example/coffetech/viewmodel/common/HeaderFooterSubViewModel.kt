@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import com.example.coffetech.Routes.Routes
+import com.example.coffetech.routes.Routes
 
 class HeaderFooterSubViewModel : ViewModel() {
 

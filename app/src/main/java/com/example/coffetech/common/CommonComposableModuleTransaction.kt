@@ -4,13 +4,40 @@ package com.example.coffetech.common
 import android.widget.DatePicker
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,6 +45,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,6 +54,93 @@ import com.example.coffetech.R
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+
+
+@Composable
+fun ReusableAlertDialog(
+    title: String,
+    description: String,
+    confirmButtonText: String,
+    cancelButtonText: String,
+    isLoading: Boolean = false,
+    onConfirmClick: () -> Unit,
+    onCancelClick: () -> Unit,
+    onDismissRequest: () -> Unit,
+    image: Painter // El parámetro de la imagen se agrega aquí
+) {
+    AlertDialog(
+        containerColor = Color.White,
+        modifier = Modifier.background(Color.Transparent),
+        onDismissRequest = { onDismissRequest() },
+        title = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Imagen en la parte superior
+                Icon(
+                    painter = image,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(width = 207.dp, height = 160.dp)
+                        .padding(bottom = 6.dp), // Espaciado debajo de la imagen
+                    tint = Color.Unspecified // Evitar que se tiña la imagen
+                )
+
+                // Título
+                Text(
+                    text = title,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFB31D34), // Color rojo para el título
+                    textAlign = TextAlign.Center,
+                    fontSize = 22.sp,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        text = {
+            // Descripción del diálogo
+            Text(
+                text = description,
+                color = Color.Black,
+                textAlign = TextAlign.Center,
+                fontSize = 22.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp) // Espaciado interno del texto
+            )
+        },
+        confirmButton = {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    ReusableButton(
+                        text = if (isLoading) "$confirmButtonText..." else confirmButtonText,
+                        onClick = onConfirmClick,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth(0.7f), // Ajusta el ancho del botón
+                        buttonType = ButtonType.Red
+                    )
+                    Spacer(modifier = Modifier.height(8.dp)) // Espaciado entre botones
+                    ReusableButton(
+                        text = cancelButtonText,
+                        onClick = onCancelClick,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth(0.7f), // Ajusta el ancho del botón
+                        buttonType = ButtonType.Green
+                    )
+                }
+            }
+        }
+    )
+}
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)

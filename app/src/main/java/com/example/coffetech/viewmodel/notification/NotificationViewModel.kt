@@ -10,7 +10,7 @@ import com.example.coffetech.model.InvitationInstance
 import com.example.coffetech.model.Notification
 import com.example.coffetech.model.NotificationInstance
 import com.example.coffetech.model.NotificationResponse
-import com.example.coffetech.model.RetrofitInstance
+
 import com.example.coffetech.utils.SharedPreferencesHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

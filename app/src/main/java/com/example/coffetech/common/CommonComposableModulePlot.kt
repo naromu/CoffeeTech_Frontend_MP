@@ -1,16 +1,15 @@
 package com.example.coffetech.common
 
 
+// MapComponents.kt
+
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -33,7 +31,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
@@ -42,14 +39,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.coffetech.R
-// MapComponents.kt
-
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-
-import androidx.compose.ui.unit.dp
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.*
 
 @Composable
 fun GeneralPlotInfoCard(
@@ -115,76 +104,6 @@ fun GeneralPlotInfoCard(
 
 
 
-
-
-@Composable
-fun PlotFaseCard(
-    faseName: String,
-    initialDate: String,
-    endDate: String,
-    onEditClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(16.dp))
-            .padding(16.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column(
-                modifier = Modifier.weight(1f) // Permite que el texto ocupe todo el espacio disponible
-            ) {
-                Text(
-                    text = "Fase Actual",
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
-                )
-                Text(
-                    text = faseName,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Text(
-                    text = initialDate,
-                    color = Color.Gray,
-                    fontSize = 12.sp
-                )
-
-                Text(
-                    text = endDate,
-                    color = Color.Gray,
-                    fontSize = 12.sp
-                )
-            }
-
-            IconButton(
-                onClick = onEditClick,
-                modifier = Modifier
-                    .offset(x = -10.dp)
-                    .size(20.dp)
-                    .background(Color(0xFFB31D34), shape = CircleShape)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.edit_icon),
-                    contentDescription = "Editar Informacion de fase actual",
-                    tint = Color.White,
-                    modifier = Modifier.size(16.dp)
-                )
-            }
-
-        }
-    }
-}
 
 
 @Composable
@@ -325,28 +244,3 @@ fun VarietyCoffeeDropdown(
 }
 
 
-
-
-@Composable
-fun GoogleMapView(
-    location: LatLng,
-    onLocationSelected: (LatLng) -> Unit
-) {
-    val cameraPositionState = rememberCameraPositionState {
-        position = com.google.android.gms.maps.model.CameraPosition.fromLatLngZoom(location, 15f)
-    }
-
-    GoogleMap(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(300.dp),
-        cameraPositionState = cameraPositionState,
-        onMapClick = { latLng: LatLng ->
-            onLocationSelected(latLng)
-        }
-    ) {
-        Marker(
-            state = MarkerState(position = location)
-        )
-    }
-}

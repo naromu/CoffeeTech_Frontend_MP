@@ -1,11 +1,9 @@
 package com.example.coffetech.model
 
-import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-// Versión unificada de la respuesta
 data class NotificationResponse(
     val status: String,
     val message: String,
@@ -13,7 +11,6 @@ data class NotificationResponse(
 )
 
 
-// Versión unificada de Notification que contiene todas las propiedades necesarias
 data class Notification(
     val notification_id: Int,
     val message: String,

@@ -1,37 +1,7 @@
     package com.example.coffetech.view.common
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.coffetech.R
-import com.example.coffetech.Routes.Routes
-import com.example.coffetech.viewmodel.common.HeaderFooterViewModel
 
-
-/**
+    /**
  * Composable function that renders a layout with a top bar and bottom navigation bar.
  * The top bar includes a back arrow and a title, while the bottom bar contains multiple
  * navigation options. The central content is passed as a composable lambda.
@@ -42,13 +12,38 @@ import com.example.coffetech.viewmodel.common.HeaderFooterViewModel
  * @param currentView A string representing the current active view in the navigation bar.
  * @param content A lambda composable function that represents the main content of the screen.
  */
-import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.ui.text.style.TextOverflow
-import com.example.coffetech.common.ReusableTittleSmall
+    import androidx.compose.foundation.background
+    import androidx.compose.foundation.layout.Arrangement
+    import androidx.compose.foundation.layout.Box
+    import androidx.compose.foundation.layout.Row
+    import androidx.compose.foundation.layout.fillMaxSize
+    import androidx.compose.foundation.layout.fillMaxWidth
+    import androidx.compose.foundation.layout.height
+    import androidx.compose.foundation.layout.navigationBarsPadding
+    import androidx.compose.foundation.layout.padding
+    import androidx.compose.foundation.layout.size
+    import androidx.compose.foundation.layout.statusBarsPadding
+    import androidx.compose.foundation.layout.systemBarsPadding
+    import androidx.compose.material3.Icon
+    import androidx.compose.material3.IconButton
+    import androidx.compose.material3.Scaffold
+    import androidx.compose.material3.Text
+    import androidx.compose.runtime.Composable
+    import androidx.compose.ui.Alignment
+    import androidx.compose.ui.Modifier
+    import androidx.compose.ui.graphics.Color
+    import androidx.compose.ui.platform.LocalContext
+    import androidx.compose.ui.res.painterResource
+    import androidx.compose.ui.tooling.preview.Preview
+    import androidx.compose.ui.unit.dp
+    import androidx.lifecycle.viewmodel.compose.viewModel
+    import androidx.navigation.NavController
+    import androidx.navigation.compose.rememberNavController
+    import com.example.coffetech.R
+    import com.example.coffetech.common.ReusableTittleSmall
+    import com.example.coffetech.viewmodel.common.HeaderFooterViewModel
 
-@Composable
+    @Composable
 fun HeaderFooterSubView(
     modifier: Modifier = Modifier,
     title: String,

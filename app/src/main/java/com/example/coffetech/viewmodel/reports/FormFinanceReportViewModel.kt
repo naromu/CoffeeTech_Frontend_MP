@@ -9,7 +9,7 @@ import androidx.navigation.NavController
 import com.example.coffetech.model.FarmInstance
 import com.example.coffetech.model.ListPlotsResponse
 import com.example.coffetech.model.Plot
-import com.example.coffetech.model.RetrofitInstance
+
 import com.example.coffetech.utils.SharedPreferencesHelper
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

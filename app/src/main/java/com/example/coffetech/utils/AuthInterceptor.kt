@@ -8,8 +8,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.Interceptor
+import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
-import okhttp3.Response // Asegúrate de que esta es la clase correcta
 
 class AuthInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {

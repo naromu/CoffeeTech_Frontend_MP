@@ -19,7 +19,6 @@ data class Location(
 )
 
 
-// OpenElevationService.kt
 
 interface OpenElevationService {
     @GET("/api/v1/lookup")

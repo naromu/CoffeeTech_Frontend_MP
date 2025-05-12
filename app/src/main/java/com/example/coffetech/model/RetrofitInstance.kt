@@ -89,21 +89,3 @@ object TransactionInstance {
             .create(TransactionService::class.java)
     }
 }
-
-
-object RetrofitInstance {
-    private const val BASE_URL = "https://prueba-production-1b78.up.railway.app"
-
-    private val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(AuthInterceptor()) // Agregar el AuthInterceptor
-        .build()
-
-    val api: ApiService by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(okHttpClient) // Usar el cliente con el interceptor
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ApiService::class.java)
-    }
-}

@@ -5,18 +5,17 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import com.example.coffetech.model.AuthRetrofitInstance
 import com.example.coffetech.model.LogoutRequest
 import com.example.coffetech.model.LogoutResponse
-import com.example.coffetech.model.RetrofitInstance
+import com.example.coffetech.routes.Routes
+import com.example.coffetech.utils.SharedPreferencesHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import com.example.coffetech.Routes.Routes
-import com.example.coffetech.model.AuthRetrofitInstance
-import com.example.coffetech.utils.SharedPreferencesHelper
 
 class HeaderFooterViewModel : ViewModel() {
     private val _isMenuVisible = MutableStateFlow(false)
@@ -50,14 +49,14 @@ class HeaderFooterViewModel : ViewModel() {
             return
         }
 
-        isLoading.value = true // Activar estado de carga
+        isLoading.value = true
 
         val logoutRequest = LogoutRequest(session_token = sessionToken)
         AuthRetrofitInstance.api.logoutUser(logoutRequest).enqueue(object : Callback<LogoutResponse> {
             override fun onResponse(call: Call<LogoutResponse>, response: Response<LogoutResponse>) {
                 if (response.isSuccessful) {
                     val logoutResponse = response.body()
-                    isLoading.value = false // Desactivar estado de carga
+                    isLoading.value = false
                     if (logoutResponse?.status == "success") {
                         sharedPreferencesHelper.clearSession()
                         Log.d("HeaderFooterViewModel", "Logout exitoso")
@@ -84,8 +83,6 @@ class HeaderFooterViewModel : ViewModel() {
 
 
     // Footer functions
-
-    // Footer functions
     fun onHomeClick(navController: NavController) {
         navController.navigate(Routes.StartView) // Navegar a Home o la vista correspondiente
     }
@@ -94,23 +91,6 @@ class HeaderFooterViewModel : ViewModel() {
         navController.navigate(Routes.FarmView) // Navegar a la vista de Fincas
     }
 
-    fun onCentralButtonClick( context: Context) {
-        // Aquí podrías agregar la lógica para el botón central
-        Toast.makeText(context, "Función disponible proximamente", Toast.LENGTH_SHORT).show()
 
-    }
-
-
-    fun onReportsClick(navController: NavController, context: Context) {
-        Toast.makeText(context, "Función disponible proximamente", Toast.LENGTH_SHORT).show()
-
-        //navController.navigate("reportsView") // Navegar a la vista de reportes (deberás crear esta ruta)
-    }
-
-    fun onLaborClick(navController: NavController, context: Context) {
-        navController.navigate(Routes.CulturalWorkTaskGeneralView) // Navegar a la vista de Fincas
-
-        //navController.navigate("costsView") // Navegar a la vista de costos (deberás crear esta ruta)
-    }
 
 }

@@ -103,24 +103,6 @@ class SharedPreferencesHelper(context: Context) {
 
     // ============================= OTRAS FUNCIONES ============================= //
 
-    // Guardar estado de actualización de datos
-    fun setDataUpdated(isUpdated: Boolean) {
-        with(sharedPref.edit()) {
-            putBoolean("data_updated", isUpdated)
-            apply()
-        }
-    }
-
-    // Verificar si los datos están actualizados
-    fun isDataUpdated(): Boolean {
-        return sharedPref.getBoolean("data_updated", false)
-    }
-
-    // Reiniciar el estado de actualización de datos
-    fun resetDataUpdatedFlag() {
-        setDataUpdated(false)
-    }
-
     // Función para guardar el token, nombre y correo
     fun saveSessionData(token: String, name: String, email: String) {
         with(sharedPref.edit()) {
@@ -163,16 +145,7 @@ class SharedPreferencesHelper(context: Context) {
         }
     }
 
-    fun setVerificationStatus(isVerified: Boolean) {
-        with(sharedPref.edit()) {
-            putBoolean("is_verified", isVerified)
-            apply()
-        }
-    }
 
-    fun isVerified(): Boolean {
-        return sharedPref.getBoolean("is_verified", false)
-    }
     // ============================= MANEJO DE VARIEDADES DE CAFÉ ============================= //
 
     // Función para guardar las variedades de café

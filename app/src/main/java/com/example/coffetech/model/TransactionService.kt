@@ -133,6 +133,29 @@ data class FinancialReportData(
 
 )
 
+data class FarmSummary(
+    val total_ingresos: Long,
+    val total_gastos: Long,
+    val balance_financiero: Long,
+    val ingresos_por_categoria: List<CategoryAmount>,
+    val gastos_por_categoria: List<CategoryAmount>
+)
+
+data class CategoryAmount(
+    val category_name: String,
+    val monto: Long
+)
+
+data class PlotFinancial(
+    val plot_id: Int,
+    val plot_name: String,
+    val ingresos: Long,
+    val gastos: Long,
+    val balance: Long,
+    val ingresos_por_categoria: List<CategoryAmount>,
+    val gastos_por_categoria: List<CategoryAmount>
+)
+
 data class TransactionHistory(
     val date: String,
     val plot_name: String,

@@ -3,13 +3,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.coffetech.model.ApiResponse
 import com.example.coffetech.model.AuthRetrofitInstance
-import com.example.coffetech.model.AuthService
 import com.example.coffetech.model.CoffeeVariety
 import com.example.coffetech.model.FarmInstance
 import com.example.coffetech.model.Role
 import com.example.coffetech.model.UnitMeasure
 import com.example.coffetech.utils.SharedPreferencesHelper
-import com.example.coffetech.model.RetrofitInstance
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

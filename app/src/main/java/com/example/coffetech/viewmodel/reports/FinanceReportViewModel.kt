@@ -1,24 +1,22 @@
 package com.example.coffetech.viewmodel.reports
 
+
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-
-import com.example.coffetech.model.RetrofitInstance
 import com.example.coffetech.model.FinancialReportData
 import com.example.coffetech.model.FinancialReportRequest
 import com.example.coffetech.model.FinancialReportResponse
-
+import com.example.coffetech.model.TransactionInstance
 import com.example.coffetech.utils.SharedPreferencesHelper
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import android.util.Log // Importación añadida para Logcat
-import com.example.coffetech.model.TransactionInstance
 
 class FinanceReportViewModel : ViewModel() {
 

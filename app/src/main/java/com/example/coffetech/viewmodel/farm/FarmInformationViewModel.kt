@@ -4,12 +4,13 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import com.example.coffetech.model.FarmInstance
 import com.example.coffetech.model.GetFarmResponse
 import com.example.coffetech.model.ListPlotsResponse
 import com.example.coffetech.model.Plot
-import com.example.coffetech.model.RetrofitInstance
 import com.example.coffetech.utils.SharedPreferencesHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,8 +19,6 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import androidx.compose.ui.text.input.TextFieldValue
-import com.example.coffetech.model.FarmInstance
 
 /**
  * ViewModel responsible for managing the state and logic of displaying farm information.

@@ -1,21 +1,18 @@
 package com.example.coffetech.viewmodel.farm
 
-import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import androidx.navigation.NavController
-
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import com.example.coffetech.model.CreateFarmRequest
 import com.example.coffetech.model.CreateFarmResponse
 import com.example.coffetech.model.FarmInstance
-import com.example.coffetech.model.FarmService
-import com.example.coffetech.model.RetrofitInstance
 import com.example.coffetech.model.UnitMeasure
 import com.example.coffetech.utils.SharedPreferencesHelper
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback

@@ -1,13 +1,11 @@
 package com.example.coffetech.ui.theme
 
+// Definir los colores personalizados para el tema claro
+
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-
-// Definir los colores personalizados para el tema claro
-
-import androidx.compose.material3.lightColorScheme
 
 // Definir los colores personalizados para el tema claro
 private val LightColorScheme = lightColorScheme(
