@@ -9,6 +9,7 @@ import com.example.coffetech.model.AuthRetrofitInstance
 import com.example.coffetech.model.RegisterRequest
 import com.example.coffetech.model.RegisterResponse
 import com.example.coffetech.routes.Routes
+import com.example.coffetech.viewmodel.auth.others.performRegisterUser
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -67,63 +68,29 @@ class RegisterPasswordViewModel : ViewModel() {
 
     // Método para registrar al usuario
     fun registerUser(navController: NavController, context: Context, name: String, email: String) {
-        // Validación de campos vacíos
         if (name.isBlank() || email.isBlank() || password.value.isBlank() || confirmPassword.value.isBlank()) {
             errorMessage.value = "Todos los campos son obligatorios"
             return
         }
 
-        // Validación de la contraseña
         val passwordErrors = validatePassword(password.value, confirmPassword.value)
         if (passwordErrors.isNotEmpty()) {
-            // Unimos todos los errores en un solo mensaje
-            errorMessage.value = passwordErrors.joinToString(separator = "\n")
+            errorMessage.value = passwordErrors.joinToString("\n")
             return
         }
-        errorMessage.value = "" // Borrar mensaje de error previo
-        isLoading.value = true // Set loading state to true
 
-        // Usa directamente name y email como cadenas de texto
-        val registerRequest = RegisterRequest(name, email, password.value, confirmPassword.value)
+        errorMessage.value = ""
 
-        // Make the registration request to the backend
-        AuthRetrofitInstance.api.registerUser(registerRequest).enqueue(object : Callback<RegisterResponse> {
-            override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
-                isLoading.value = false // Stop loading
-
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    responseBody?.let {
-                        if (it.status == "success") {
-                            Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-
-                            // Navigate to the account verification screen
-                            navController.navigate(Routes.VerifyAccountView) {
-                                popUpTo(Routes.RegisterView) { inclusive = true }
-                            }
-                        } else {
-                            Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                        }
-                    }
-                } else {
-                    val errorBody = response.errorBody()?.string()
-                    errorBody?.let {
-                        val errorJson = JSONObject(it)
-                        val errorMessage = errorJson.getString("message")
-                        Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
-                    } ?: run {
-                        val unknownErrorMessage = "Error desconocido al registrar usuario"
-                        Toast.makeText(context, unknownErrorMessage, Toast.LENGTH_LONG).show()
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-                isLoading.value = false // Stop loading
-                val failureMessage = "Fallo en la conexión: ${t.message}"
-                Toast.makeText(context, failureMessage, Toast.LENGTH_LONG).show()
-            }
-        })
+        performRegisterUser(
+            name = name,
+            email = email,
+            password = password.value,
+            confirmPassword = confirmPassword.value,
+            context = context,
+            navController = navController,
+            onLoading = { isLoading.value = it },
+            onError = { errorMessage.value = it }
+        )
     }
 
 }

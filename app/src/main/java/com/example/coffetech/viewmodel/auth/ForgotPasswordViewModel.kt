@@ -11,6 +11,7 @@ import com.example.coffetech.model.AuthRetrofitInstance
 import com.example.coffetech.model.ForgotPasswordRequest
 import com.example.coffetech.model.ForgotPasswordResponse
 import com.example.coffetech.routes.Routes
+import com.example.coffetech.viewmodel.auth.others.performForgotPasswordRequest
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -67,52 +68,14 @@ class ForgotPasswordViewModel : ViewModel() {
 
         isLoading.value = true // Start loading
 
-        val forgotPasswordRequest = ForgotPasswordRequest(email.value)
+        performForgotPasswordRequest(
+            email = email.value,
+            context = context,
+            navController = navController,
+            onLoading = { isLoading.value = it },
+            onError = { errorMessage.value = it }
+        )
 
-        AuthRetrofitInstance.api.forgotPassword(forgotPasswordRequest).enqueue(object : Callback<ForgotPasswordResponse> {
-            override fun onResponse(call: Call<ForgotPasswordResponse>, response: Response<ForgotPasswordResponse>) {
-                isLoading.value = false // Stop loading
-
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    responseBody?.let {
-                        if (it.status == "success") {
-                            Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-
-                            // Navigate to the confirm token screen
-                            navController.navigate(Routes.ConfirmTokenForgotPasswordView)
-                        } else {
-                            Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                        }
-                    }
-                } else {
-                    // Handle error response from the server
-                    val errorBody = response.errorBody()?.string()
-                    errorBody?.let {
-                        try {
-                            val errorJson = JSONObject(it)
-                            val errorMessage = if (errorJson.has("message")) {
-                                errorJson.getString("message")
-                            } else {
-                                "Error desconocido al enviar email"
-                            }
-                            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
-                        } catch (e: Exception) {
-                            Toast.makeText(context, "Error al procesar la respuesta del servidor", Toast.LENGTH_LONG).show()
-                        }
-                    } ?: run {
-                        val unknownErrorMessage = "Error desconocido al registrar usuario"
-                        Toast.makeText(context, unknownErrorMessage, Toast.LENGTH_LONG).show()
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<ForgotPasswordResponse>, t: Throwable) {
-                isLoading.value = false // Stop loading
-                errorMessage.value = "Error de red: ${t.localizedMessage}"
-                Toast.makeText(context, errorMessage.value, Toast.LENGTH_LONG).show()
-            }
-        })
     }
 
     /**

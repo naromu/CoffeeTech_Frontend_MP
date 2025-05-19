@@ -9,6 +9,7 @@ import com.example.coffetech.model.AuthRetrofitInstance
 import com.example.coffetech.model.UpdateProfileRequest
 import com.example.coffetech.model.UpdateProfileResponse
 import com.example.coffetech.utils.SharedPreferencesHelper
+import com.example.coffetech.viewmodel.auth.others.performUpdateProfile
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -77,59 +78,23 @@ class ProfileViewModel : ViewModel() {
      */
     fun saveProfile(context: Context, onSuccess: () -> Unit) {
         val sharedPreferencesHelper = SharedPreferencesHelper(context)
-        val sessionToken = sharedPreferencesHelper.getSessionToken()
+        val sessionEmail = sharedPreferencesHelper.getUserEmail() // Ya lo tienes cargado también
 
-        // Validate that the name field is not blank
         if (name.value.isBlank()) {
             nameErrorMessage.value = "El nombre no puede estar vacío"
             return
         }
 
-        // Ensure the session token is available
-        if (sessionToken == null) {
-            errorMessage.value = "No se encontró el token de sesión."
-            Toast.makeText(context, "Error: No se encontró el token de sesión. Por favor, inicia sesión nuevamente.", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        // Create the profile update request
-        val updateRequest = UpdateProfileRequest(new_name = name.value)
-        isLoading.value = true // Set loading state to true
-
-        // Make the network request to update the profile
-        AuthRetrofitInstance.api.updateProfile(updateRequest, sessionToken).enqueue(object : Callback<UpdateProfileResponse> {
-            override fun onResponse(call: Call<UpdateProfileResponse>, response: Response<UpdateProfileResponse>) {
-                isLoading.value = false // Disable loading state
-
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody?.status == "success") {
-                        // Save the new name in SharedPreferences
-                        sharedPreferencesHelper.saveSessionData(sessionToken, name.value, email.value)
-
-                        // Show a success message
-                        Toast.makeText(context, "Perfil actualizado exitosamente.", Toast.LENGTH_LONG).show()
-                        isProfileUpdated.value = false
-                        onSuccess() // Call the success callback
-                    } else {
-                        val errorMsg = responseBody?.message ?: "Error desconocido al actualizar el perfil."
-                        errorMessage.value = errorMsg
-                        Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
-                    }
-                } else {
-                    val serverErrorMsg = "Error al actualizar el perfil."
-                    errorMessage.value = serverErrorMsg
-                    Toast.makeText(context, serverErrorMsg, Toast.LENGTH_LONG).show()
-                    Log.e("ProfileViewModel", "Error en la respuesta del servidor: ${response.errorBody()?.string()}")
-                }
+        performUpdateProfile(
+            context = context,
+            newName = name.value,
+            email = sessionEmail,
+            onLoading = { isLoading.value = it },
+            onError = { errorMessage.value = it },
+            onSuccess = {
+                isProfileUpdated.value = false
+                onSuccess()
             }
-
-            override fun onFailure(call: Call<UpdateProfileResponse>, t: Throwable) {
-                val connectionErrorMsg = "Error de conexión"
-                errorMessage.value = connectionErrorMsg
-                Toast.makeText(context, connectionErrorMsg, Toast.LENGTH_LONG).show()
-                Log.e("ProfileViewModel", "Error de conexión")
-            }
-        })
+        )
     }
 }

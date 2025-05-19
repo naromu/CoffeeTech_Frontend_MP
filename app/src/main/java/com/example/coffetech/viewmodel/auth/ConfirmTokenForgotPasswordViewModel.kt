@@ -12,6 +12,7 @@ import com.example.coffetech.model.AuthRetrofitInstance
 import com.example.coffetech.model.VerifyRequest
 import com.example.coffetech.model.VerifyResponse
 import com.example.coffetech.routes.Routes
+import com.example.coffetech.viewmodel.auth.others.performConfirmToken
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -60,55 +61,12 @@ class ConfirmTokenForgotPasswordViewModel : ViewModel() {
             return
         }
 
-        val verifyRequest = VerifyRequest(token = token.value)
-
-        isLoading.value = true // Indicate that the loading process has started
-
-        // Make a network call to verify the token
-        AuthRetrofitInstance.api.confirmForgotPassword(verifyRequest).enqueue(object : Callback<VerifyResponse> {
-            override fun onResponse(call: Call<VerifyResponse>, response: Response<VerifyResponse>) {
-                isLoading.value = false // End the loading process
-
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    responseBody?.let {
-                        if (it.status == "success") {
-                            Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-
-                            Log.d("ConfirmTokenViewModel", "Navigating to NewPasswordView with token: ${token.value}")
-
-                            // Navigate to the NewPasswordView with the token
-                            navController.navigate("${Routes.NewPasswordView}/${token.value}")
-                        } else {
-                            errorMessage.value = it.message ?: "Error desconocido del servidor"
-                        }
-                    }
-                } else {
-                    // Handle error response from the server
-                    val errorBody = response.errorBody()?.string()
-                    errorBody?.let {
-                        try {
-                            val errorJson = JSONObject(it)
-                            val errorMessage = if (errorJson.has("message")) {
-                                errorJson.getString("message")
-                            } else {
-                                "Error desconocido al confirmar el token"
-                            }
-                            this@ConfirmTokenForgotPasswordViewModel.errorMessage.value = errorMessage
-                        } catch (e: Exception) {
-                            errorMessage.value = "Error desconocido al confirmar el token"
-                        }
-                    } ?: run {
-                        errorMessage.value = "Error desconocido al confirmar el token"
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<VerifyResponse>, t: Throwable) {
-                // Handle failure due to connection issues
-                errorMessage.value = "Fallo en la conexión: ${t.message}"
-                Toast.makeText(context, errorMessage.value, Toast.LENGTH_LONG).show()
-            }
-        })
+        performConfirmToken(
+            token = token.value,
+            context = context,
+            navController = navController,
+            onLoading = { isLoading.value = it },
+            onError = { errorMessage.value = it }
+        )
     }
 }

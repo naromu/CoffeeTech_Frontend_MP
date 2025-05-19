@@ -11,6 +11,7 @@ import com.example.coffetech.model.AuthRetrofitInstance
 import com.example.coffetech.model.VerifyRequest
 import com.example.coffetech.model.VerifyResponse
 import com.example.coffetech.routes.Routes
+import com.example.coffetech.viewmodel.auth.others.performVerifyAccount
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -53,53 +54,17 @@ class VerifyAccountViewModel : ViewModel() {
      * @param context The [Context] used for displaying Toast messages.
      */
     fun verifyUser(navController: NavController, context: Context) {
-        // Ensure the token is not blank
         if (token.value.isBlank()) {
             errorMessage.value = "El token es obligatorio"
             return
         }
 
-        val verifyRequest = VerifyRequest(token = token.value)
-        isLoading.value = true // Set loading state to true
-
-        // Make the network request to verify the token
-        AuthRetrofitInstance.api.verifyUser(verifyRequest).enqueue(object : Callback<VerifyResponse> {
-            override fun onResponse(call: Call<VerifyResponse>, response: Response<VerifyResponse>) {
-                isLoading.value = false // Disable loading state
-
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    responseBody?.let {
-                        if (it.status == "success") {
-                            Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-
-                            // Navigate to the login screen after successful verification
-                            navController.navigate(Routes.LoginView) {
-                                popUpTo(Routes.VerifyAccountView) { inclusive = true } // Remove VerifyAccountView from the back stack
-                            }
-                        } else {
-                            errorMessage.value = it.message ?: "Error desconocido del servidor"
-                        }
-                    }
-                } else {
-                    // Handle error response from the server
-                    val errorBody = response.errorBody()?.string()
-                    errorBody?.let {
-                        val errorJson = JSONObject(it)
-                        val errorMessage = errorJson.getString("message")
-                        Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
-                    } ?: run {
-                        errorMessage.value = "Error desconocido al registrar usuario"
-                        Toast.makeText(context, errorMessage.value, Toast.LENGTH_LONG).show()
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<VerifyResponse>, t: Throwable) {
-                // Handle network failure
-                errorMessage.value = "Fallo en la conexión: ${t.message}"
-                Toast.makeText(context, errorMessage.value, Toast.LENGTH_LONG).show()
-            }
-        })
+        performVerifyAccount(
+            token = token.value,
+            context = context,
+            navController = navController,
+            onLoading = { isLoading.value = it },
+            onError = { errorMessage.value = it }
+        )
     }
 }

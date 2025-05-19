@@ -70,6 +70,7 @@ class RegisterViewModel : ViewModel() {
      * @return `true` if the email is valid, `false` otherwise.
      */
     private fun validateEmail(email: String): Boolean {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$".toRegex()
+        return email.matches(emailRegex)
     }
 }

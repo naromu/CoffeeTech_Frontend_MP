@@ -12,6 +12,7 @@ import com.example.coffetech.model.AuthRetrofitInstance
 import com.example.coffetech.model.ResetPasswordRequest
 import com.example.coffetech.model.ResetPasswordResponse
 import com.example.coffetech.routes.Routes
+import com.example.coffetech.viewmodel.auth.others.performResetPassword
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -74,57 +75,33 @@ class NewPasswordViewModel : ViewModel() {
      * @param token The token used to authenticate the password reset request.
      */
     fun resetPassword(navController: NavController, context: Context, token: String) {
-        Log.d("NewPasswordViewModel", "Token recibido en resetPassword: $token")
-
-        // Validate that both password fields are not blank
+        // Validación local
         if (password.value.isBlank() || confirmPassword.value.isBlank()) {
             errorMessage.value = "Ambos campos son obligatorios"
             return
         }
 
-        // Validate the passwords
         val (isValidPassword, passwordMessage) = validatePassword(password.value, confirmPassword.value)
         if (!isValidPassword) {
             errorMessage.value = passwordMessage
-        } else {
-            errorMessage.value = ""
-
-            // Create the password reset request object
-            val resetPasswordRequest = ResetPasswordRequest(
-                token = token,
-                new_password = password.value,
-                confirm_password = confirmPassword.value
-            )
-
-            isLoading.value = true // Indicate that the loading process has started
-
-            // Make the network request to reset the password
-            AuthRetrofitInstance.api.resetPassword(resetPasswordRequest).enqueue(object : Callback<ResetPasswordResponse> {
-                override fun onResponse(call: Call<ResetPasswordResponse>, response: Response<ResetPasswordResponse>) {
-                    isLoading.value = false
-
-                    if (response.isSuccessful) {
-                        val responseBody = response.body()
-                        responseBody?.let {
-                            if (it.status == "success") {
-                                Toast.makeText(context, "Contraseña restablecida exitosamente", Toast.LENGTH_SHORT).show()
-                                navController.navigate(Routes.LoginView)
-                            } else {
-                                errorMessage.value = it.message ?: "Error desconocido del servidor"
-                            }
-                        }
-                    } else {
-                        errorMessage.value = "Error desconocido al restablecer la contraseña"
-                    }
-                }
-
-                override fun onFailure(call: Call<ResetPasswordResponse>, t: Throwable) {
-                    errorMessage.value = "Fallo en la conexión: ${t.message}"
-                    Toast.makeText(context, errorMessage.value, Toast.LENGTH_LONG).show()
-                }
-            })
+            return
         }
+
+        // Limpia errores previos
+        errorMessage.value = ""
+
+        // Llama al handler de red
+        performResetPassword(
+            token = token,
+            newPassword = password.value,
+            confirmPassword = confirmPassword.value,
+            context = context,
+            navController = navController,
+            onLoading = { isLoading.value = it },
+            onError = { errorMessage.value = it }
+        )
     }
+
 
     /**
      * Validates that the password and confirm password meet security requirements and match.

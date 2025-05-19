@@ -1,7 +1,10 @@
+import org.gradle.testing.jacoco.tasks.JacocoReport
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.google.services) // Cambio aquí
+    alias(libs.plugins.google.services) 
+    id("jacoco")
 }
 
 android {
@@ -31,11 +34,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     buildFeatures {
         compose = true
@@ -100,9 +103,60 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.4.0")
 
+    testImplementation("org.mockito:mockito-core:5.2.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
 
+
+
+    implementation("javax.annotation:javax.annotation-api:1.3.2")
 
 
     val nav_version = "2.7.7"
     implementation("androidx.navigation:navigation-compose:$nav_version")
 }
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+
+    val fileFilter = listOf(
+        "**/R.class",
+        "**/R\$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*"
+    )
+
+    val viewModelClassPattern = "**/viewmodel/**/*.class"
+
+    val javaClasses = fileTree("${buildDir}/intermediates/javac/debug/classes") {
+        include(viewModelClassPattern)
+        exclude(fileFilter)
+    }
+
+    val kotlinClasses = fileTree("${buildDir}/tmp/kotlin-classes/debug") {
+        include(viewModelClassPattern)
+        exclude(fileFilter)
+    }
+
+    classDirectories.setFrom(files(javaClasses, kotlinClasses))
+
+    sourceDirectories.setFrom(files(
+        "$projectDir/src/main/java",
+        "$projectDir/src/main/kotlin"
+    ))
+
+    executionData.setFrom(fileTree(buildDir) {
+        include(
+            "jacoco/testDebugUnitTest.exec",
+            "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
+        )
+    })
+}
+
